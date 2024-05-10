@@ -5,14 +5,104 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "busco/busco": {
+                        "branch": "master",
+                        "git_sha": "17486961b8b1ab1aae258c83a7e947b40d8ab670",
+                        "installed_by": ["modules"]
+                    },
+                    "busco/generateplot": {
+                        "branch": "master",
+                        "git_sha": "1fab6356ab837d90e9be9636dd7e7713a68dbf7b",
+                        "installed_by": ["modules"]
+                    },
+                    "bwa/index": {
+                        "branch": "master",
+                        "git_sha": "6278bf9afd4a4b2d00fa6052250e73da3d91546f",
+                        "installed_by": ["modules"]
+                    },
+                    "bwa/mem": {
+                        "branch": "master",
+                        "git_sha": "b97197968ac12dde2463fa54541f6350c46f2035",
+                        "installed_by": ["modules"]
+                    },
                     "fastqc": {
                         "branch": "master",
                         "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
                         "installed_by": ["modules"]
                     },
+                    "fcs/fcsgx": {
+                        "branch": "master",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "installed_by": ["modules"]
+                    },
+                    "genomescope2": {
+                        "branch": "master",
+                        "git_sha": "c95215baf20e6d8cf2ae0e8411d03c5d9ef21d4a",
+                        "installed_by": ["modules"]
+                    },
+                    "gfastats": {
+                        "branch": "master",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "installed_by": ["modules"]
+                    },
+                    "hifiasm": {
+                        "branch": "master",
+                        "git_sha": "aecb06fcdb995ff3e3df7c7a1fd119367d6d1996",
+                        "installed_by": ["modules"]
+                    },
+                    "merqury": {
+                        "branch": "master",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "installed_by": ["modules"]
+                    },
+                    "meryl/histogram": {
+                        "branch": "master",
+                        "git_sha": "c95215baf20e6d8cf2ae0e8411d03c5d9ef21d4a",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
+                        "installed_by": ["modules"]
+                    },
+                    "pairtools/dedup": {
+                        "branch": "master",
+                        "git_sha": "500d9eaad96739d5f4c9b839944f4a3500ec7540",
+                        "installed_by": ["modules"]
+                    },
+                    "pairtools/parse": {
+                        "branch": "master",
+                        "git_sha": "9745b380c85528dba913f0fc1483b1f12a0d7941",
+                        "installed_by": ["modules"]
+                    },
+                    "pairtools/sort": {
+                        "branch": "master",
+                        "git_sha": "c5fa7d50a536c46da1d7333d9251deade2ba0827",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/faidx": {
+                        "branch": "master",
+                        "git_sha": "f153f1f10e1083c49935565844cccb7453021682",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/index": {
+                        "branch": "master",
+                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/sort": {
+                        "branch": "master",
+                        "git_sha": "4352dbdb09ec40db71e9b172b97a01dcf5622c26",
+                        "installed_by": ["modules"]
+                    },
+                    "tiara/tiara": {
+                        "branch": "master",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "installed_by": ["modules"]
+                    },
+                    "yahs": {
+                        "branch": "master",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     }
                 }

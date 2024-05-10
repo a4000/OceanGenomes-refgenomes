@@ -1,12 +1,5 @@
-<h1>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-oceangenomesrefgenomes_logo_dark.png">
-    <img alt="nf-core/oceangenomesrefgenomes" src="docs/images/nf-core-oceangenomesrefgenomes_logo_light.png">
-  </picture>
-</h1>
-
-[![GitHub Actions CI Status](https://github.com/nf-core/oceangenomesrefgenomes/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/oceangenomesrefgenomes/actions/workflows/ci.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/oceangenomesrefgenomes/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/oceangenomesrefgenomes/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/oceangenomesrefgenomes/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![GitHub Actions CI Status](https://github.com/a4000/OceanGenomes-refgenomes/actions/workflows/ci.yml/badge.svg)](https://github.com/a4000/OceanGenomes-refgenomes/actions/workflows/ci.yml)
+[![GitHub Actions Linting Status](https://github.com/a4000/OceanGenomes-refgenomes/actions/workflows/linting.yml/badge.svg)](https://github.com/a4000/OceanGenomes-refgenomes/actions/workflows/linting.yml)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
@@ -19,7 +12,7 @@
 
 ## Introduction
 
-**nf-core/oceangenomesrefgenomes** is a bioinformatics pipeline that ...
+**OceanGenomes-refgenomes** is OceanGenomes reference genomes pipeline.
 
 <!-- TODO nf-core:
    Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
@@ -31,8 +24,29 @@
      workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+1. Filter and convert bam files to fastq filesc([`HiFiAdapterFilt`](https://github.com/sheinasim/HiFiAdapterFilt))
+2. PacBio Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+3. Assemble PacBio reads ([`hifiasm_M2`](https://github.com/chhylp123/hifiasm))
+4. Assembly stats ([`gfastats_M2`](https://github.com/vgl-hub/gfastats))
+5. Count k-mers ([`Meryl`](https://github.com/marbl/meryl))
+6. Estimate genome size ([`GenomeScope2`](https://github.com/schatzlab/genomescope))
+7. Illumina Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+8. Assemble Illumina reads ([`hifiasm_M4`](https://github.com/chhylp123/hifiasm))
+9. Assembly stats ([`gfastats_M5`](https://github.com/vgl-hub/gfastats))
+10. K-mer assembly QC ([`Merqury`](https://github.com/marbl/merqury))
+11. Gene assembly QC ([`BUSCO_M5`](https://busco.ezlab.org/))
+12. Create index ([`samtools_M6a`](https://www.htslib.org/))
+13. Index files ([`bwa_M6a`](https://github.com/lh3/bwa))
+14. Align Hi-C reads ([`bwa_M6b`](https://github.com/lh3/bwa))
+15. Map pairs ([`pairtools`](https://pairtools.readthedocs.io/en/latest/))
+16. Sort and index ([`samtools_M6b`](https://www.htslib.org/))
+17. Create scaffold ([`YAHS`](https://github.com/c-zhou/yahs))
+18. Create report ([`Tiara`](https://github.com/ibe-uw/tiara))
+19. Create report ([`fcs-gx`](https://github.com/ncbi/fcs-gx))
+20. Filter scaffolds ([`bbmap`](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbmap-guide/))
+21. Scaffold stats ([`gfastats_M9`](https://github.com/vgl-hub/gfastats))
+22. Gene assembly QC([`BUSCO_M9`](https://busco.ezlab.org/))
+23. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
