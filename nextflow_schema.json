@@ -83,7 +83,7 @@
                 "bind_dir": {
                     "type": "string",
                     "description": "Directory to bind (e.g., '/scratch')."
-                },
+                }
             }
         },
         "reference_genome_options": {
