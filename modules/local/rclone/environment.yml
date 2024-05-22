@@ -1,0 +1,7 @@
+name: rclone
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconda::rclone=1.65.2

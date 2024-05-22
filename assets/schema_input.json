@@ -13,21 +13,41 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "hifi_dir": {
                 "type": "string",
-                "format": "file-path",
+                "format": "directory-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "HiFi directory must exist",
+                "meta": ["hifi_dir"]
             },
-            "fastq_2": {
+            "hic_dir": {
                 "type": "string",
-                "format": "file-path",
+                "format": "directory-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "Hi-C directory must exist",
+                "meta": ["hic_dir"]
+            },
+            "version": {
+                "type": "integer",
+                "meta": ["version"]
+            },
+            "seq_date": {
+                "type": "string",
+                "meta": ["seq_date"]
+            },
+            "tolid": {
+                "type": "string",
+                "meta": ["tolid"]
+            },
+            "gsize": {
+                "type": "string",
+                "meta": ["gsize"]
+            },
+            "taxids": {
+                "type": "string",
+                "meta": ["taxids"]
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "hifi_dir", "version", "seq_date", "tolid", "gsize", "taxids"]
     }
 }

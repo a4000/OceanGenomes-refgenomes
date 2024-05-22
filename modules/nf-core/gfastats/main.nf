@@ -8,9 +8,8 @@ process GFASTATS {
         'biocontainers/gfastats:1.3.6--hdcf5f25_3' }"
 
     input:
-    tuple val(meta), path(assembly)   // input.[fasta|fastq|gfa][.gz]
+    tuple val(meta), path(assembly), path(stats)   // input.[fasta|fastq|gfa][.gz]
     val out_fmt                       // output format (fasta/fastq/gfa)
-    val genome_size                   // estimated genome size for NG* statistics (optional).
     val target                        // target specific sequence by header, optionally with coordinates (optional).
     path agpfile                      // -a --agp-to-path <file> converts input agp to path and replaces existing paths.
     path include_bed                  // -i --include-bed <file> generates output on a subset list of headers or coordinates in 0-based bed format.
@@ -33,6 +32,9 @@ process GFASTATS {
     def ebed = exclude_bed ? "--exclude-bed $exclude_bed" : ""
     def sak  = instructions ? "--swiss-army-knife $instructions" : ""
     """
+    # Get genomesize from $stats file
+    genome_size=\$(cat $stats | grep 'Genome Unique Length' | grep -o 'bp.*' | sed 's/bp//g' | sed 's/ //g' | sed 's/,//g')
+
     gfastats \\
         $args \\
         --threads $task.cpus \\
@@ -42,7 +44,7 @@ process GFASTATS {
         $sak \\
         --out-format ${prefix}.${out_fmt}.gz \\
         $assembly \\
-        $genome_size \\
+        \$genome_size \\
         $target \\
         > ${prefix}.assembly_summary
 

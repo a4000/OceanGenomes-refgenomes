@@ -1,6 +1,6 @@
-process CUT {
+process CAT_HIC {
     tag "$meta.id"
-    label 'process_low'
+    label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -9,11 +9,10 @@ process CUT {
 
     input:
     tuple val(meta), path(files)
-    val(suffix)
 
     output:
-    tuple val(meta), path("cut_file/*"), emit: cut_file
-    path  "versions.yml"               , emit: versions
+    tuple val(meta), path("cat_files/*fastq.gz"), emit: cat_files
+    path  "versions.yml"                        , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,15 +21,24 @@ process CUT {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir cut_file
-    cut \\
+    mkdir cat_files
+    cp $files/* .
+
+    zcat \\
         $args \\
-        $files \\
-        > cut_file/${prefix}.${suffix}
+        *hic.R1.fastq.gz \\
+        > cat_files/${prefix}.hic.R1.fastq
+
+    zcat \\
+        $args \\
+        *hic.R2.fastq.gz \\
+        > cat_files/${prefix}.hic.R2.fastq
+
+    gzip cat_files/*
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        cut: \$( cut --version | head -n 1 | sed 's/cut (GNU coreutils)//g' )
+        fastqc: \$( fastqc --version | sed '/FastQC v/!d; s/.*v//' )
     END_VERSIONS
     """
 }

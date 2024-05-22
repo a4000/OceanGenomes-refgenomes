@@ -55,6 +55,11 @@
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
+                    "meryl/count": {
+                        "branch": "master",
+                        "git_sha": "c95215baf20e6d8cf2ae0e8411d03c5d9ef21d4a",
+                        "installed_by": ["modules"]
+                    },
                     "meryl/histogram": {
                         "branch": "master",
                         "git_sha": "c95215baf20e6d8cf2ae0e8411d03c5d9ef21d4a",

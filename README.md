@@ -26,10 +26,10 @@
 
 1. Filter and convert bam files to fastq filesc([`HiFiAdapterFilt`](https://github.com/sheinasim/HiFiAdapterFilt))
 2. PacBio Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-3. Assemble PacBio reads ([`hifiasm_M2`](https://github.com/chhylp123/hifiasm))
-4. Assembly stats ([`gfastats_M2`](https://github.com/vgl-hub/gfastats))
 5. Count k-mers ([`Meryl`](https://github.com/marbl/meryl))
 6. Estimate genome size ([`GenomeScope2`](https://github.com/schatzlab/genomescope))
+3. Assemble PacBio reads ([`hifiasm_M2`](https://github.com/chhylp123/hifiasm))
+4. Assembly stats ([`gfastats_M2`](https://github.com/vgl-hub/gfastats))
 7. Illumina Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 8. Assemble Illumina reads ([`hifiasm_M4`](https://github.com/chhylp123/hifiasm))
 9. Assembly stats ([`gfastats_M5`](https://github.com/vgl-hub/gfastats))

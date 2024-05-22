@@ -1,6 +1,6 @@
-process CUT {
+process CAT {
     tag "$meta.id"
-    label 'process_low'
+    label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -12,7 +12,7 @@ process CUT {
     val(suffix)
 
     output:
-    tuple val(meta), path("cut_file/*"), emit: cut_file
+    tuple val(meta), path("cat_file/*"), emit: cat_file
     path  "versions.yml"               , emit: versions
 
     when:
@@ -22,15 +22,16 @@ process CUT {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir cut_file
-    cut \\
+    mkdir cat_file
+
+    cat \\
         $args \\
         $files \\
-        > cut_file/${prefix}.${suffix}
+        > cat_file/${prefix}.${suffix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        cut: \$( cut --version | head -n 1 | sed 's/cut (GNU coreutils)//g' )
+        fastqc: \$( fastqc --version | sed '/FastQC v/!d; s/.*v//' )
     END_VERSIONS
     """
 }

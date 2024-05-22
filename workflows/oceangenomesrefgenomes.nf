@@ -4,30 +4,33 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { HIFIADAPTERFILT        } from '../modules/local/hifiadapterfilt/main'
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MERYL_MERYL            } from '../modules/local/meryl/meryl/main'
-include { MERYL_HISTOGRAM        } from '../modules/nf-core/meryl/histogram/main'
-include { GENOMESCOPE2           } from '../modules/nf-core/genomescope2/main'
-include { HIFIASM                } from '../modules/nf-core/hifiasm/main'
-include { GFASTATS               } from '../modules/nf-core/gfastats/main'
-include { BUSCO_BUSCO            } from '../modules/nf-core/busco/busco/main'
-include { BUSCO_GENERATEPLOT     } from '../modules/nf-core/busco/generateplot/main'
-include { MERQURY                } from '../modules/nf-core/merqury/main'
-include { OMNIC                  } from '../subwokflows/local/omnic/main'
-include { YAHS                   } from '../modules/nf-core/yahs/main'
-include { FCS_FCSGX              } from '../modules/nf-core/fcs/fcsgx/main'
-include { TIARA_TIARA            } from '../modules/nf-core/tiara/tiara/main'
-include { BBMAP_FILTERBYNAME     } from '../modules/nf-core/bbmap/filterbyname/main'
-include { RENAMECATSCAFF         } from '../modules/local/custom/renamecatscaff/main'
-include { GFASTATS as GFASTATS2  } from '../modules/nf-core/gfastats/main'
-include { BUSCO_BUSCO as BUSCO2  } from '../modules/nf-core/busco/busco/main'
-include { MERQURY as MERQURY2    } from '../modules/nf-core/merqury/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-validation'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_oceangenomesrefgenomes_pipeline'
+include { HIFIADAPTERFILT              } from '../modules/local/hifiadapterfilt/main'
+include { FASTQC                       } from '../modules/nf-core/fastqc/main'
+include { MERYL_COUNT                  } from '../modules/nf-core/meryl/count/main'
+include { MERYL_HISTOGRAM              } from '../modules/nf-core/meryl/histogram/main'
+include { GENOMESCOPE2                 } from '../modules/nf-core/genomescope2/main'
+include { CAT_HIC                      } from '../modules/local/cat_hic/main'
+include { HIFIASM                      } from '../modules/nf-core/hifiasm/main'
+include { GFASTATS as GFASTATS_TOFASTA } from '../modules/nf-core/gfastats/main'
+include { GFASTATS                     } from '../modules/nf-core/gfastats/main'
+include { BUSCO_BUSCO                  } from '../modules/nf-core/busco/busco/main'
+include { BUSCO_GENERATEPLOT           } from '../modules/nf-core/busco/generateplot/main'
+include { MERQURY                      } from '../modules/nf-core/merqury/main'
+include { OMNIC                        } from '../subworkflows/local/omnic/main'
+include { YAHS                         } from '../modules/nf-core/yahs/main'
+include { FCS_FCSGX                    } from '../modules/nf-core/fcs/fcsgx/main'
+include { TIARA_TIARA                  } from '../modules/nf-core/tiara/tiara/main'
+include { BBMAP_FILTERBYNAME           } from '../modules/local/bbmap/filterbyname/main'
+include { CAT                          } from '../modules/local/cat/main'
+include { GFASTATS as GFASTATS2        } from '../modules/nf-core/gfastats/main'
+include { BUSCO_BUSCO as BUSCO_BUSCO2  } from '../modules/nf-core/busco/busco/main'
+include { MERQURY as MERQURY2          } from '../modules/nf-core/merqury/main'
+include { RCLONE                       } from '../modules/local/rclone/main'
+include { MULTIQC                      } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap             } from 'plugin/nf-validation'
+include { paramsSummaryMultiqc         } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML       } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText       } from '../subworkflows/local/utils_nfcore_oceangenomesrefgenomes_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,11 +48,23 @@ workflow OCEANGENOMESREFGENOMES {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
 
+    ch_hifi = ch_samplesheet.map {
+        meta ->
+            return [ meta[0], meta.hifi_dir[0] ]
+    }
+
+    ch_hic = ch_samplesheet.map {
+        meta ->
+            if (meta.hic_dir[0] != null) {
+                return [ meta[0], meta.hic_dir[0] ]
+            }
+    }
+
     //
     // MODULE: Run HiFiAdapterFilt
     //
     HIFIADAPTERFILT (
-        ch_samplesheet
+        ch_hifi
     )
     ch_versions = ch_versions.mix(HIFIADAPTERFILT.out.versions.first())
 
@@ -65,16 +80,18 @@ workflow OCEANGENOMESREFGENOMES {
     //
     // MODULE: Run Meryl
     //
-    MERYL_MERYL (
-
+    MERYL_COUNT (
+        HIFIADAPTERFILT.out.reads,
+        params.kvalue
     )
-    ch_versions = ch_versions.mix(MERYL_MERYL.out.versions.first())
+    ch_versions = ch_versions.mix(MERYL_COUNT.out.versions.first())
 
     //
     // MODULE: Run Meryl histogram
     //
     MERYL_HISTOGRAM (
-
+        MERYL_COUNT.out.meryl_db,
+        params.kvalue
     )
     ch_versions = ch_versions.mix(MERYL_HISTOGRAM.out.versions.first())
 
@@ -82,121 +99,170 @@ workflow OCEANGENOMESREFGENOMES {
     // MODULE: Run Genomescope2
     //
     GENOMESCOPE2 (
-
+        MERYL_HISTOGRAM.out.hist
     )
     ch_versions = ch_versions.mix(GENOMESCOPE2.out.versions.first())
 
     //
+    // MODULE: Concatenate Hi-C files together for cases when there is multiple R1 and multiple R2 files
+    //
+    CAT_HIC (
+        ch_hic
+    )
+
+    //
     // MODULE: Run Hifiasm
     //
-    HIFIASM (
+    ch_hifiasm_in = HIFIADAPTERFILT.out.reads.join(CAT_HIC.out.cat_files)
+    .map {
+        meta, hifi, hic ->
+            return [ meta, hifi, hic[0], hic[1] ]
+    }
 
+    HIFIASM (
+        ch_hifiasm_in,
+        [],
+        []
     )
     ch_versions = ch_versions.mix(HIFIASM.out.versions.first())
 
     //
     // MODULE: Run Gfastats
     //
-    GFASTATS (
+    ch_gfastats_in = HIFIASM.out.paternal_contigs.join(GENOMESCOPE2.out.summary)
 
+    GFASTATS (
+        ch_gfastats_in,
+        "fasta",
+        [],
+        [],
+        [],
+        [],
+        []
     )
     ch_versions = ch_versions.mix(GFASTATS.out.versions.first())
 
     //
     // MODULE: Run Busco
     //
-    BUSCO_BUSCO (
-
-    )
-    ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
+    //BUSCO_BUSCO (
+    //    GFASTATS.out.assembly,
+    //    params.busco_mode,
+    //    params.busco_lineage,
+    //    params.busco_db,
+    //    []
+    //)
+    //ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
 
     //
     // MODULE: Run Busco generate_plot
     //
-    BUSCO_GENERATEPLOT (
-
-    )
-    ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT.out.versions.first())
+    //BUSCO_GENERATEPLOT (
+    //    BUSCO_BUSCO.out.short_summaries_txt
+    //)
+    //ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT.out.versions.first())
 
     //
     // MODULE: Run Merqury
     //
-    MERQURY (
-
-    )
-    ch_versions = ch_versions.mix(MERQURY.out.versions.first())
+    //MERQURY (
+    //    MERYL_MERYL.out and GFASTATS.out.fasta // These need to be combined
+    //)
+    //ch_versions = ch_versions.mix(MERQURY.out.versions.first())
 
     //
     // SUBWORKFLOW: Run omnic workflow
     //
-    OMNIC (
-
-    )
-    ch_versions = ch_versions.mix(OMNIC.out.versions.first())
+    //OMNIC (
+    //    ch_hic_read,
+    //    GFASTATS.out.assembly
+    //)
+    //ch_versions = ch_versions.mix(OMNIC.out.versions.first())
 
     //
     // MODULE: Run Yahs
     //
-    YAHS (
-
-    )
-    ch_versions = ch_versions.mix(YAHS.out.versions.first())
+    //YAHS (
+    //    OMNIC.out.bam,
+    //    GFASTATS.out.assembly, // remove meta
+    //    OMNIC.out.bai // remove meta
+    //)
+    //ch_versions = ch_versions.mix(YAHS.out.versions.first())
 
     //
     // MODULE: Run Fcsgx
     //
-    FCS_FCSGX (
-
-    )
-    ch_versions = ch_versions.mix(FCS_FCSGX.out.versions.first())
+    //FCS_FCSGX (
+    //    YAHS.out.fasta,
+    //    params.ncbi_db
+    //)
+    //ch_versions = ch_versions.mix(FCS_FCSGX.out.versions.first())
 
     //
     // MODULE: Run Tiara
     //
-    TIARA_TIARA (
-
-    )
-    ch_versions = ch_versions.mix(TIARA_TIARA.out.versions.first())
+    //TIARA_TIARA (
+    //    YAHS.out.fasta
+    //)
+    //ch_versions = ch_versions.mix(TIARA_TIARA.out.versions.first())
 
     //
     // MODULE: Run BBmap filterbyname
     //
-    BBMAP_FILTERBYNAME (
-
-    )
-    ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME.out.versions.first())
+    //BBMAP_FILTERBYNAME (
+    //    YAHS.out.fasta
+    //)
+    //ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME.out.versions.first())
 
     //
     // MODULE: Rename, and concatenate scaffolds
     //
-    RENAMECATSCAFF (
-
-    )
-    ch_versions = ch_versions.mix(RENAMECATSCAFF.out.versions.first())
+    //CAT (
+    //    TIARA_TIARA.out.fasta
+    //)
+    //ch_versions = ch_versions.mix(CAT.out.versions.first())
 
     //
     // MODULE: Run Gfastats again
     //
-    GFASTATS2 (
-
-    )
-    ch_versions = ch_versions.mix(GFASTATS2.out.versions.first())
+    //GFASTATS2 (
+    //    BBMAP_FILTERBYNAME.out.fasta,
+    //    "fasta",
+    //    [], // Get genome size from this file
+    //    [],
+    //    [],
+    //    [],
+    //    []
+    //)
+    //ch_versions = ch_versions.mix(GFASTATS2.out.versions.first())
 
     //
     // MODULE: Run Busco again
     //
-    BUSCO2 (
-
-    )
-    ch_versions = ch_versions.mix(BUSCO2.out.versions.first())
+    //BUSCO_BUSCO2 (
+    //    BBMAP_FILTERBYNAME.out.fasta,
+    //    params.busco_mode,
+    //    params.busco_lineage,
+    //    params.busco_db,
+    //    []
+    //)
+    //ch_versions = ch_versions.mix(BUSCO_BUSCO2.out.versions.first())
 
     //
     // MODULE: Run Merqury again
     //
-    MERQURY2 (
+    //MERQURY2 (
+    //    MERYL_MERYL.out and GFASTATS2.out.fasta // These need to be combined
+    //)
+    //ch_versions = ch_versions.mix(MERQURY2.out.versions.first())
 
-    )
-    ch_versions = ch_versions.mix(MERQURY2.out.versions.first())
+    //
+    // MODULE: Run Rclone
+    //
+    //RCLONE (
+    //    ch_all_out_files
+    //)
+    //ch_versions = ch_versions.mix(RCLONE.out.versions.first())
 
     //
     // Collate and save software versions

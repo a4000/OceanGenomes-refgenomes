@@ -43,6 +43,49 @@
                 }
             }
         },
+        "pipeline_parameters": {
+            "title": "Pipeline parameters",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Pipeline specific parameters.",
+            "properties": {
+                "kvalue": {
+                    "type": "integer",
+                    "description": "k value to use with Meryl.",
+                    "default": 31
+                },
+                "busco_mode": {
+                    "type": "string",
+                    "description": "Busco mode. Can be 'genome', 'ogs', or 'trans'.",
+                    "enum": ["genome", "ogs", "trans"],
+                    "default": "genome"
+                },
+                "busco_lineage": {
+                    "type": "string",
+                    "description": "Lineage to check against with Busco.",
+                    "default": "auto"
+                },
+                "busco_db": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to Busco lineage database."
+                },
+                "ncbi_db": {
+                    "type": "string",
+                    "description": "Path to NCBI database."
+                },
+                "rclone_prefix": {
+                    "type": "string",
+                    "description": "source:destination for rclone",
+                    "default": "pawsey0812:oceanomics-assemblies"
+                },
+                "bind_dir": {
+                    "type": "string",
+                    "description": "Directory to bind (e.g., '/scratch')."
+                },
+            }
+        },
         "reference_genome_options": {
             "title": "Reference genome options",
             "type": "object",
