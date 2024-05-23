@@ -60,11 +60,6 @@
                     "enum": ["genome", "ogs", "trans"],
                     "default": "genome"
                 },
-                "busco_lineage": {
-                    "type": "string",
-                    "description": "Lineage to check against with Busco.",
-                    "default": "auto"
-                },
                 "busco_db": {
                     "type": "string",
                     "format": "file-path",
@@ -75,7 +70,7 @@
                     "type": "string",
                     "description": "Path to NCBI database."
                 },
-                "rclone_prefix": {
+                "rclone_dest": {
                     "type": "string",
                     "description": "source:destination for rclone",
                     "default": "pawsey0812:oceanomics-assemblies"

@@ -23,10 +23,14 @@ process SAMTOOLS_FAIDX {
     script:
     def args = task.ext.args ?: ''
     """
+    gzip -d $fasta
+    fasta=\$(echo $fasta | sed 's/.gz//g')
     samtools \\
         faidx \\
-        $fasta \\
+        \$fasta \\
         $args
+
+    rm \$fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

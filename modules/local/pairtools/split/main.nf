@@ -4,14 +4,14 @@ process PAIRTOOLS_SPLIT {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/pairtools:1.0.2--py39h2a9f597_0' :
-        'biocontainers/pairtools:1.0.2--py39h2a9f597_0' }"
+        'https://depot.galaxyproject.org/singularity/pairtools:1.1.0--py310hb45ccb3_0' :
+        'biocontainers/pairtools:1.1.0--py310hb45ccb3_0' }"
 
     input:
     tuple val(meta), path(pairs)
 
     output:
-    tuple val(meta), path("*.unsorted.bam"), emit: sam
+    tuple val(meta), path("*.unsorted.bam"), emit: bam
     tuple val(meta), path("*.mapped.pairs"), emit: pairs
     path "versions.yml"                    , emit: versions
 

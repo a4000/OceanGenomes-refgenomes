@@ -8,9 +8,7 @@ process YAHS {
         'biocontainers/yahs:1.2a.2--h7132678_0' }"
 
     input:
-    tuple val(meta), path(hic_map)
-    path fasta
-    path fai
+    tuple val(meta), path(hic_map), path(fasta), path(fai)
 
     output:
     tuple val(meta), path("*scaffolds_final.fa") , emit: scaffolds_fasta

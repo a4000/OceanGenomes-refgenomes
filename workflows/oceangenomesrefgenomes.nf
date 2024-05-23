@@ -134,7 +134,7 @@ workflow OCEANGENOMESREFGENOMES {
     GFASTATS (
         ch_gfastats_in,
         "fasta",
-        [],
+        "",
         [],
         [],
         [],
@@ -145,80 +145,85 @@ workflow OCEANGENOMESREFGENOMES {
     //
     // MODULE: Run Busco
     //
-    //BUSCO_BUSCO (
-    //    GFASTATS.out.assembly,
-    //    params.busco_mode,
-    //    params.busco_lineage,
-    //    params.busco_db,
-    //    []
-    //)
-    //ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
+    BUSCO_BUSCO (
+        GFASTATS.out.assembly,
+        params.busco_mode,
+        params.busco_db,
+        []
+    )
+    ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
 
     //
     // MODULE: Run Busco generate_plot
     //
-    //BUSCO_GENERATEPLOT (
-    //    BUSCO_BUSCO.out.short_summaries_txt
-    //)
-    //ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT.out.versions.first())
+    BUSCO_GENERATEPLOT (
+        BUSCO_BUSCO.out.short_summaries_txt
+    )
+    ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT.out.versions.first())
 
     //
     // MODULE: Run Merqury
     //
-    //MERQURY (
-    //    MERYL_MERYL.out and GFASTATS.out.fasta // These need to be combined
-    //)
-    //ch_versions = ch_versions.mix(MERQURY.out.versions.first())
+    ch_merqury_in = MERYL_COUNT.out.meryl_db.join(GFASTATS.out.assembly)
+
+    MERQURY (
+        ch_merqury_in
+    )
+    ch_versions = ch_versions.mix(MERQURY.out.versions.first())
 
     //
     // SUBWORKFLOW: Run omnic workflow
     //
-    //OMNIC (
-    //    ch_hic_read,
-    //    GFASTATS.out.assembly
-    //)
-    //ch_versions = ch_versions.mix(OMNIC.out.versions.first())
+    ch_omnic_in = CAT_HIC.out.cat_files.join(GFASTATS.out.assembly)
+
+    OMNIC (
+        ch_omnic_in
+    )
+    ch_versions = ch_versions.mix(OMNIC.out.versions.first())
 
     //
     // MODULE: Run Yahs
     //
-    //YAHS (
-    //    OMNIC.out.bam,
-    //    GFASTATS.out.assembly, // remove meta
-    //    OMNIC.out.bai // remove meta
-    //)
-    //ch_versions = ch_versions.mix(YAHS.out.versions.first())
+    ch_yahs_in = OMNIC.out.bam.join(GFASTATS.out.assembly).join(OMNIC.out.bai)
+
+    YAHS (
+        ch_yahs_in
+    )
+    ch_versions = ch_versions.mix(YAHS.out.versions.first())
 
     //
     // MODULE: Run Fcsgx
     //
-    //FCS_FCSGX (
-    //    YAHS.out.fasta,
-    //    params.ncbi_db
-    //)
-    //ch_versions = ch_versions.mix(FCS_FCSGX.out.versions.first())
+    FCS_FCSGX (
+        YAHS.out.scaffolds_fasta,
+        params.ncbi_db
+    )
+    ch_versions = ch_versions.mix(FCS_FCSGX.out.versions.first())
 
     //
     // MODULE: Run Tiara
     //
-    //TIARA_TIARA (
-    //    YAHS.out.fasta
-    //)
-    //ch_versions = ch_versions.mix(TIARA_TIARA.out.versions.first())
+    TIARA_TIARA (
+        YAHS.out.scaffolds_fasta
+    )
+    ch_versions = ch_versions.mix(TIARA_TIARA.out.versions.first())
 
     //
     // MODULE: Run BBmap filterbyname
     //
-    //BBMAP_FILTERBYNAME (
-    //    YAHS.out.fasta
-    //)
-    //ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME.out.versions.first())
+    ch_bbmap_filterbyname_in = YAHS.out.scaffolds_fasta.join(TIARA_TIARA.out.classifications)
+
+    BBMAP_FILTERBYNAME (
+        ch_bbmap_filterbyname_in
+    )
+    ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME.out.versions.first())
 
     //
     // MODULE: Rename, and concatenate scaffolds
     //
     //CAT (
-    //    TIARA_TIARA.out.fasta
+    //    TIARA_TIARA.out.fasta,
+    //    "fasta"
     //)
     //ch_versions = ch_versions.mix(CAT.out.versions.first())
 
@@ -226,7 +231,7 @@ workflow OCEANGENOMESREFGENOMES {
     // MODULE: Run Gfastats again
     //
     //GFASTATS2 (
-    //    BBMAP_FILTERBYNAME.out.fasta,
+    //    BBMAP_FILTERBYNAME.out.scaffolds,
     //    "fasta",
     //    [], // Get genome size from this file
     //    [],
@@ -240,19 +245,27 @@ workflow OCEANGENOMESREFGENOMES {
     // MODULE: Run Busco again
     //
     //BUSCO_BUSCO2 (
-    //    BBMAP_FILTERBYNAME.out.fasta,
+    //    BBMAP_FILTERBYNAME.out.scaffolds,
     //    params.busco_mode,
-    //    params.busco_lineage,
     //    params.busco_db,
     //    []
     //)
     //ch_versions = ch_versions.mix(BUSCO_BUSCO2.out.versions.first())
 
     //
+    // MODULE: Run Busco generate_plot again
+    //
+    //BUSCO_GENERATEPLOT2 (
+    //    BUSCO_BUSCO2.out.short_summaries_txt
+    //)
+    //ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT2.out.versions.first())
+
+    //
     // MODULE: Run Merqury again
     //
+    //ch_merqury2_in = MERYL_COUNT.out.meryl_db.join(GFASTATS2.out.assembly)
     //MERQURY2 (
-    //    MERYL_MERYL.out and GFASTATS2.out.fasta // These need to be combined
+    //    ch_merqury2_in
     //)
     //ch_versions = ch_versions.mix(MERQURY2.out.versions.first())
 
@@ -260,7 +273,8 @@ workflow OCEANGENOMESREFGENOMES {
     // MODULE: Run Rclone
     //
     //RCLONE (
-    //    ch_all_out_files
+    //    ch_all_out_files,
+    //    params.rclone_dest
     //)
     //ch_versions = ch_versions.mix(RCLONE.out.versions.first())
 

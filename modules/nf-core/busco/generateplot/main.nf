@@ -7,7 +7,7 @@ process BUSCO_GENERATEPLOT {
         'biocontainers/busco:5.7.1--pyhdfd78af_0' }"
 
     input:
-    path short_summary_txt, stageAs: 'busco/*'
+    tuple val(meta), path(short_summary_txt, stageAs: 'busco/*')
 
     output:
     path '*.png'        , emit: png

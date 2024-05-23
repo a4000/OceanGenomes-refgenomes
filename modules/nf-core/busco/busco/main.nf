@@ -10,7 +10,6 @@ process BUSCO_BUSCO {
     input:
     tuple val(meta), path(fasta, stageAs:'tmp_input/*')
     val mode                              // Required:    One of genome, proteins, or transcriptome
-    val lineage                           // Required:    lineage to check against, "auto" enables --auto-lineage instead
     path busco_lineages_path              // Recommended: path to busco lineages - downloads if not set
     path config_file                      // Optional:    busco configuration file
 
@@ -34,10 +33,8 @@ process BUSCO_BUSCO {
         error "Mode must be one of 'genome', 'proteins', or 'transcriptome'."
     }
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}-${lineage}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def busco_config = config_file ? "--config $config_file" : ''
-    def busco_lineage = lineage.equals('auto') ? '--auto-lineage' : "--lineage_dataset ${lineage}"
-    def busco_lineage_dir = busco_lineages_path ? "--download_path ${busco_lineages_path}" : ''
     """
     # Nextflow changes the container --entrypoint to /bin/bash (container default entrypoint: /usr/local/env-execute)
     # Check for container variable initialisation script and source it.
@@ -74,8 +71,7 @@ process BUSCO_BUSCO {
         --in "\$INPUT_SEQS" \\
         --out ${prefix}-busco \\
         --mode $mode \\
-        $busco_lineage \\
-        $busco_lineage_dir \\
+        --lineage_dataset $busco_lineages_path \\
         $busco_config \\
         $args
 
@@ -93,11 +89,11 @@ process BUSCO_BUSCO {
     """
 
     stub:
-    def prefix      = task.ext.prefix ?: "${meta.id}-${lineage}"
+    def prefix      = task.ext.prefix ?: "${meta.id}"
     def fasta_name  = files(fasta).first().name - '.gz'
     """
     touch ${prefix}-busco.batch_summary.txt
-    mkdir -p ${prefix}-busco/$fasta_name/run_${lineage}/busco_sequences
+    mkdir -p ${prefix}-busco/$fasta_name/run_busco/busco_sequences
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
