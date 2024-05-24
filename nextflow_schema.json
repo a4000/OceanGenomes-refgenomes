@@ -66,9 +66,9 @@
                     "exists": true,
                     "description": "Path to Busco lineage database."
                 },
-                "ncbi_db": {
+                "gx_db": {
                     "type": "string",
-                    "description": "Path to NCBI database."
+                    "description": "Path to FCS-GX database."
                 },
                 "rclone_dest": {
                     "type": "string",

@@ -24,17 +24,21 @@ process CAT_HIC {
     mkdir cat_files
     cp $files/* .
 
-    zcat \\
-        $args \\
-        *hic.R1.fastq.gz \\
-        > cat_files/${prefix}.hic.R1.fastq
+    if [ "\$(ls *hic.R1.fastq.gz 2>/dev/null | wc -l)" -gt 1 ]; then
+        zcat \\
+            $args \\
+            *hic.R1.fastq.gz \\
+            > cat_files/${prefix}.hic.R1.fastq
 
-    zcat \\
-        $args \\
-        *hic.R2.fastq.gz \\
-        > cat_files/${prefix}.hic.R2.fastq
+        zcat \\
+            $args \\
+            *hic.R2.fastq.gz \\
+            > cat_files/${prefix}.hic.R2.fastq
 
-    gzip cat_files/*
+        gzip cat_files/*
+    else
+        mv *fastq.gz cat_files
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

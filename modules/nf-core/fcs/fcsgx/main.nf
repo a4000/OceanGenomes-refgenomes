@@ -31,7 +31,7 @@ process FCS_FCSGX {
     python3 /app/bin/run_gx \\
         --fasta $assembly \\
         --out-dir ./out \\
-        --gx-db ./${gxdb[0].baseName} \\
+        --gx-db $gxdb \\
         --tax-id ${meta.taxid} \\
         $args
 

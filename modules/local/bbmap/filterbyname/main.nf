@@ -9,6 +9,7 @@ process BBMAP_FILTERBYNAME {
 
     input:
     tuple val(meta), path(fasta), path(contig_list)
+    val(suffix)
 
     output:
     tuple val(meta), path("*_filtered_scaffolds.fa"), emit: scaffolds
@@ -23,7 +24,7 @@ process BBMAP_FILTERBYNAME {
     """
     filterbyname.sh \\
         in="$fasta" \\
-        out="${prefix}_filtered_scaffolds.fa" \\
+        out="${prefix}_${suffix}" \\
         names="$contig_list" \\
         exclude \\
         $args

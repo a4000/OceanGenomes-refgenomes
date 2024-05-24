@@ -1,4 +1,4 @@
-process CAT {
+process CAT_SCAFFOLDS {
     tag "$meta.id"
     label 'process_medium'
 
@@ -9,25 +9,21 @@ process CAT {
 
     input:
     tuple val(meta), path(files)
-    val(suffix)
 
     output:
-    tuple val(meta), path("cat_file/*"), emit: cat_file
-    path  "versions.yml"               , emit: versions
+    tuple val(meta), path("*fa"), emit: cat_file
+    path  "versions.yml"        , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mkdir cat_file
+    sed 's/scaffold/H1.scaffold/g' *hap1_filtered_scaffolds.fa > H1.scaffold_1.fa
+    sed 's/scaffold/H2.scaffold/g' *hap2_filtered_scaffolds.fa > H2.scaffold_2.fa
 
-    cat \\
-        $args \\
-        $files \\
-        > cat_file/${prefix}.${suffix}
+    cat H1.scaffold_1.fa H2.scaffold_2.fa > "${prefix}_combined_scaffold.fa"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

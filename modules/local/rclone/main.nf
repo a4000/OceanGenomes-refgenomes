@@ -3,11 +3,10 @@ process RCLONE {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "hub.docker.com/rclone/rclone:1.65.2"
+    container "quay.io/toolhippie/rclone:20240212"
 
     input:
-    tuple val(meta), path(files)
-    val(dest_path)
+    tuple val(meta), path(files), val(dest_path)
 
     output:
     path "versions.yml", emit: versions
@@ -19,22 +18,16 @@ process RCLONE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    files=$files
-    if [[ \${#files[@]} -eq 1 ]]; then
-        rclone \\
-            move \\
-            $args \\
-            \$files \\
-            $dest_path
-    else
-        for file in "\${files[@]}"; do
-            rclone \\
-            move \\
-            $args \\
-            \$file \\
-            $dest_path
-        done
-    fi
+    mkdir files_to_move
+    cp $files files_to_move
+    cd files_to_move
+
+    rclone move \\
+        \$(pwd)/. \\
+        $dest_path \\
+        $args
+
+    cd ../
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

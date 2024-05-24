@@ -43,11 +43,11 @@
                 "type": "string",
                 "meta": ["gsize"]
             },
-            "taxids": {
+            "taxid": {
                 "type": "string",
-                "meta": ["taxids"]
+                "meta": ["taxid"]
             }
         },
-        "required": ["sample", "hifi_dir", "version", "seq_date", "tolid", "gsize", "taxids"]
+        "required": ["sample", "hifi_dir", "taxid"]
     }
 }

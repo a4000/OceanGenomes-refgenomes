@@ -31,6 +31,7 @@ process SAMTOOLS_FAIDX {
         $args
 
     rm \$fasta
+    mv \${fasta}.fai ${fasta}.fai
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

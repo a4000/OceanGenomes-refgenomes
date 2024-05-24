@@ -17,14 +17,16 @@ workflow OMNIC {
     main:
 
     ch_versions = Channel.empty()
-    ch_hic_read = ch_omnic_in.map {
-        meta, reads, assembly ->
-            return [ meta, reads ]
-    }
-    ch_assembly = ch_omnic_in.map {
-        meta, reads, assembly ->
-            return [ meta, assembly ]
-    }
+    ch_hic_read = ch_omnic_in
+        .map {
+            meta, reads, assembly ->
+                return [ meta, reads ]
+        }
+    ch_assembly = ch_omnic_in
+        .map {
+            meta, reads, assembly ->
+                return [ meta, assembly ]
+        }
 
     //
     // MODULE: Create an index for the reference
@@ -117,5 +119,6 @@ workflow OMNIC {
     emit:
     bam      = SAMTOOLS_SORT.out.bam    // channel: [ val(meta), bam ]
     bai      = SAMTOOLS_INDEX.out.bai   // channel: [ val(meta), bai ]
+    fai      = SAMTOOLS_FAIDX.out.fai   // channel: [ val(meta), fai ]
     versions = ch_versions              // channel: [ versions.yml ]
 }
