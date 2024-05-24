@@ -11,8 +11,10 @@ process CAT_SCAFFOLDS {
     tuple val(meta), path(files)
 
     output:
-    tuple val(meta), path("*fa"), emit: cat_file
-    path  "versions.yml"        , emit: versions
+    tuple val(meta), path("*_combined_scaffold.fa"), emit: cat_file
+    tuple val(meta), path("H1.scaffold_1.fa")      , emit: paternal_scaffold
+    tuple val(meta), path("H2.scaffold_2.fa")      , emit: maternal_scaffold
+    path  "versions.yml"                           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

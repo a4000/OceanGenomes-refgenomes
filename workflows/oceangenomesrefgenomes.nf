@@ -31,6 +31,7 @@ include { GFASTATS as GFASTATS_FINAL                        } from '../modules/n
 include { BUSCO_BUSCO as BUSCO_BUSCO_FINAL                  } from '../modules/nf-core/busco/busco/main'
 include { BUSCO_GENERATEPLOT as BUSCO_GENERATEPLOT_FINAL    } from '../modules/nf-core/busco/generateplot/main'
 include { MERQURY as MERQURY_FINAL                          } from '../modules/nf-core/merqury/main'
+include { TAR                                               } from '../modules/local/tar/main'
 include { RCLONE                                            } from '../modules/local/rclone/main'
 include { MULTIQC                                           } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap                                  } from 'plugin/nf-validation'
@@ -335,9 +336,13 @@ workflow OCEANGENOMESREFGENOMES {
     ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT_FINAL.out.versions.first())
 
     //
-    // MODULE: Run Merqury again
+    // MODULE: Run Merqury again CAT_SCAFFOLDS.out.
     //
-    ch_merqury_fin_in = MERYL_COUNT.out.meryl_db.join(GFASTATS_FINAL.out.assembly)
+    ch_merqury_fin_in = MERYL_COUNT.out.meryl_db.join(CAT_SCAFFOLDS.out.paternal_scaffold).join(CAT_SCAFFOLDS.out.maternal_scaffold)
+        .map {
+            meta, meryl_db, paternal_scaffold, maternal_scaffold ->
+                return [ meta, meryl_db, [ paternal_scaffold, maternal_scaffold ] ]
+        }
 
     MERQURY_FINAL (
         ch_merqury_fin_in
@@ -345,129 +350,798 @@ workflow OCEANGENOMESREFGENOMES {
     ch_versions = ch_versions.mix(MERQURY_FINAL.out.versions.first())
 
     //
-    // Collect files for rclone
+    // Collect HIFIADAPTERFILT files for rclone
     //
     ch_rclone_in = ch_rclone_in.mix(
         HIFIADAPTERFILT.out.reads
             .map {
                 meta, reads ->
-                    return [ meta, reads, "${params.rclone_dest}/${meta.id}/hifi" ]
+                    return [ meta, reads, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifi" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIADAPTERFILT.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/hifi/qc_stats" ]
+                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifi/qc_stats" ]
             }
     )
 
-    //meryl
-    //tar -czvf "${processed_dir}/${tolid}_${seq_date}_meryldb.tar.gz" "${processed_dir}/${sample}.meryl" && rclone copy "${processed_dir}/${tolid}_${seq_date}_meryldb.tar.gz" pawsey0812:oceanomics-assemblies/${sample}/meryl
-    //rclone copy "${processed_dir}/${sample}.meryl.hist" pawsey0812:oceanomics-assemblies/${sample}/meryl
+    //
+    // Collect MERYL files for rclone
+    //
+    TAR (
+        MERYL_COUNT.out.meryl_db,
+        "meryldb.tar.gz"
+    )
+    ch_versions = ch_versions.mix(TAR.out.versions.first())
 
-    //genomescope2
-    //rclone copy "genomescope/" "pawsey0812:oceanomics-assemblies/${sample}/genomescope" --checksum
+    ch_rclone_in = ch_rclone_in.mix(
+        TAR.out.tar_file
+            .map {
+                meta, meryl_db ->
+                    return [ meta, meryl_db, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERYL_HISTOGRAM.out.hist
+            .map {
+                meta, hist ->
+                    return [ meta, hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
+            }
+    )
 
-    //gfastats
-    //rclone move "${sample}_${ver}.0.hifiasm.p_ctg.assembly.summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/gfastats
-//rclone move "${sample}_${ver}.0.hifiasm.a_ctg.assembly.summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/gfastats
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.assembly.summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/gfastats
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.assembly.summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/gfastats
-//rclone move "${sample}_${ver}.0.hifiasm.p_ctg.fasta" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.0.hifiasm.a_ctg.fasta" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.fasta" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.fasta" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.0.hifiasm.p_ctg.gfa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.0.hifiasm.a_ctg.gfa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.gfa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.gfa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
+    //
+    // Collect GENOMESCOPE2 files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.linear_plot_png
+            .map {
+                meta, linear_plot_png ->
+                    return [ meta, linear_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.transformed_linear_plot_png
+            .map {
+                meta, transformed_linear_plot_png ->
+                    return [ meta, transformed_linear_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.log_plot_png
+            .map {
+                meta, log_plot_png ->
+                    return [ meta, log_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.transformed_log_plot_png
+            .map {
+                meta, transformed_log_plot_png ->
+                    return [ meta, transformed_log_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.model
+            .map {
+                meta, model ->
+                    return [ meta, model, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.summary
+            .map {
+                meta, summary ->
+                    return [ meta, summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.lookup_table
+            .map {
+                meta, lookup_table ->
+                    return [ meta, lookup_table, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GENOMESCOPE2.out.fitted_histogram_png
+            .map {
+                meta, fitted_histogram_png ->
+                    return [ meta, fitted_histogram_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+            }
+    )
 
-//busco
-//rclone move "${sample}_${ver}.0.hifiasm.busco_figure.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.batch_summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap1_short_summary.specific.${busco_db}.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap1_short_summary.specific.${busco_db}.json" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap1_full_table.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap1_missing_busco_list.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap2_short_summary.specific.${busco_db}.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap2_short_summary.specific.${busco_db}.json" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap2_full_table.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.hap2_missing_busco_list.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.pri_short_summary.specific.${busco_db}.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.pri_short_summary.specific.${busco_db}.json" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.pri_full_table.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.pri_missing_busco_list.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.alt_short_summary.specific.${busco_db}.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.alt_short_summary.specific.${busco_db}.json" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.alt_full_table.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.0.hifiasm.alt_missing_busco_list.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
+    //
+    // Collect HIFIASM files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.raw_unitigs
+            .map {
+                meta, raw_unitigs ->
+                    return [ meta, raw_unitigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.corrected_reads
+            .map {
+                meta, corrected_reads ->
+                    return [ meta, corrected_reads, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.source_overlaps
+            .map {
+                meta, source_overlaps ->
+                    return [ meta, source_overlaps, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.reverse_overlaps
+            .map {
+                meta, reverse_overlaps ->
+                    return [ meta, reverse_overlaps, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.processed_contigs
+            .map {
+                meta, processed_contigs ->
+                    return [ meta, processed_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.processed_unitigs
+            .map {
+                meta, processed_unitigs ->
+                    return [ meta, processed_unitigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.primary_contigs
+            .map {
+                meta, primary_contigs ->
+                    return [ meta, primary_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.alternate_contigs
+            .map {
+                meta, alternate_contigs ->
+                    return [ meta, alternate_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.paternal_contigs
+            .map {
+                meta, paternal_contigs ->
+                    return [ meta, paternal_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.maternal_contigs
+            .map {
+                meta, maternal_contigs ->
+                    return [ meta, maternal_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        HIFIASM.out.log
+            .map {
+                meta, log ->
+                    return [ meta, log, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+            }
+    )
 
-//merqury
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.spectra-cn.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.spectra-cn.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.spectra-cn.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.spectra-cn.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.spectra-cn.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.spectra-cn.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-asm.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-asm.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-asm.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-cn.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-cn.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-cn.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.completeness.stats" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_stats
-//rclone move "${sample}_${ver}.0.hifiasm.summary.qv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_qv
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.qv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_qv
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.qv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_qv
+    //
+    // Collect GFASTATS files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        GFASTATS_PATERNAL.out.assembly
+            .map {
+                meta, assembly ->
+                    return [ meta, assembly, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GFASTATS_MATERNAL.out.assembly
+            .map {
+                meta, assembly ->
+                    return [ meta, assembly, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GFASTATS_PATERNAL.out.assembly_summary
+            .map {
+                meta, assembly_summary ->
+                    return [ meta, assembly_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GFASTATS_MATERNAL.out.assembly_summary
+            .map {
+                meta, assembly_summary ->
+                    return [ meta, assembly_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+            }
+    )
 
-//yahs
-//rclone move "${sample}_${ver}.1.yahs.hap1.tiara_filter_summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/decontam
-//rclone move "${sample}_${ver}.1.yahs.hap1.tiara.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/decontam
-//rclone move "${sample}_${ver}.1.yahs.hap2.tiara_filter_summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/decontam
-//rclone move "${sample}_${ver}.1.yahs.hap2.tiara.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/decontam
+    //
+    // Collect BUSCO files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO.out.batch_summary
+            .map {
+                meta, batch_summary ->
+                    return [ meta, batch_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO.out.short_summaries_txt
+            .map {
+                meta, short_summaries_txt ->
+                    return [ meta, short_summaries_txt, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO.out.short_summaries_json
+            .map {
+                meta, short_summaries_json ->
+                    return [ meta, short_summaries_json, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+            }
+    )
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_BUSCO.out.full_table
+    //        .map {
+    //            meta, full_table ->
+    //                return [ meta, full_table, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+    //        }
+    //)
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_BUSCO.out.missing_busco_list
+    //        .map {
+    //            meta, missing_busco_list ->
+    //                return [ meta, missing_busco_list, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+    //        }
+    //)
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO.out.single_copy_proteins
+            .map {
+                meta, single_copy_proteins ->
+                    return [ meta, single_copy_proteins, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+            }
+    )
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_BUSCO.out.seq_dir
+    //        .map {
+    //            meta, seq_dir ->
+    //                return [ meta, seq_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+    //        }
+    //)
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO.out.translated_dir
+            .map {
+                meta, translated_dir ->
+                    return [ meta, translated_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO.out.busco_dir
+            .map {
+                meta, busco_dir ->
+                    return [ meta, busco_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+            }
+    )
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_GENERATEPLOT.out.png
+    //        .map {
+    //            meta, png ->
+    //                return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+    //        }
+    //)
 
-//cat
-//rclone copy "${sample}_${ver}.2.tiara.hap1_scaffolds.fa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone copy "${sample}_${ver}.2.tiara.hap2_scaffolds.fa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.2.tiara.hap1_scaffolds_renamed.fa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.2.tiara.hap2_scaffolds_renamed.fa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
-//rclone move "${sample}_${ver}.2.tiara.hap1.hap2_combined_scaffolds.fa" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/assembly
+    //
+    // Collect MERQURY files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.assembly_only_kmers_bed
+            .map {
+                meta, assembly_only_kmers_bed ->
+                    return [ meta, assembly_only_kmers_bed, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.assembly_only_kmers_wig
+            .map {
+                meta, assembly_only_kmers_wig ->
+                    return [ meta, assembly_only_kmers_wig, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.stats
+            .map {
+                meta, stats ->
+                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.dist_hist
+            .map {
+                meta, dist_hist ->
+                    return [ meta, dist_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_cn_fl_png
+            .map {
+                meta, spectra_cn_fl_png ->
+                    return [ meta, spectra_cn_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_cn_hist
+            .map {
+                meta, spectra_cn_hist ->
+                    return [ meta, spectra_cn_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_cn_ln_png
+            .map {
+                meta, spectra_cn_ln_png ->
+                    return [ meta, spectra_cn_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_cn_st_png
+            .map {
+                meta, spectra_cn_st_png ->
+                    return [ meta, spectra_cn_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_asm_fl_png
+            .map {
+                meta, spectra_asm_fl_png ->
+                    return [ meta, spectra_asm_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_asm_hist
+            .map {
+                meta, spectra_asm_hist ->
+                    return [ meta, spectra_asm_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_asm_ln_png
+            .map {
+                meta, spectra_asm_ln_png ->
+                    return [ meta, spectra_asm_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.spectra_asm_st_png
+            .map {
+                meta, spectra_asm_st_png ->
+                    return [ meta, spectra_asm_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.assembly_qv
+            .map {
+                meta, assembly_qv ->
+                    return [ meta, assembly_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.scaffold_qv
+            .map {
+                meta, scaffold_qv ->
+                    return [ meta, scaffold_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY.out.read_ploidy
+            .map {
+                meta, read_ploidy ->
+                    return [ meta, read_ploidy, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+            }
+    )
 
-//gfastats_final
-//rclone copy "${sample}_${ver}.2.tiara.hap1.scaffolds.summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/gfastats
-//rclone copy "${sample}_${ver}.2.tiara.hap2.scaffolds.summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/gfastats
+    //
+    // Collect OMNIC files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        OMNIC_PATERNAL.out.fai
+            .map {
+                meta, fai ->
+                    return [ meta, fai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        OMNIC_MATERNAL.out.fai
+            .map {
+                meta, fai ->
+                    return [ meta, fai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        OMNIC_PATERNAL.out.bam
+            .map {
+                meta, bam ->
+                    return [ meta, bam, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        OMNIC_MATERNAL.out.bam
+            .map {
+                meta, bam ->
+                    return [ meta, bam, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        OMNIC_PATERNAL.out.bai
+            .map {
+                meta, bai ->
+                    return [ meta, bai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        OMNIC_MATERNAL.out.bai
+            .map {
+                meta, bai ->
+                    return [ meta, bai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+            }
+    )
 
-//busco_final
-//rclone move "${sample}_${ver}.2.tiara.busco_figure.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.batch_summary.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap1_short_summary.specific.${busco_db}.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap1_short_summary.specific.${busco_db}.json" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap1_full_table.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap1_missing_busco_list.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap2_short_summary.specific.${busco_db}.txt" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap2_short_summary.specific.${busco_db}.json" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap2_full_table.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
-//rclone move "${sample}_${ver}.2.tiara.hap2_missing_busco_list.tsv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/busco
+    //
+    // Collect YAHS files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        YAHS_PATERNAL.out.scaffolds_fasta
+            .map {
+                meta, scaffolds_fasta ->
+                    return [ meta, scaffolds_fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        YAHS_MATERNAL.out.scaffolds_fasta
+            .map {
+                meta, scaffolds_fasta ->
+                    return [ meta, scaffolds_fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        YAHS_PATERNAL.out.scaffolds_agp
+            .map {
+                meta, scaffolds_agp ->
+                    return [ meta, scaffolds_agp, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        YAHS_MATERNAL.out.scaffolds_agp
+            .map {
+                meta, scaffolds_agp ->
+                    return [ meta, scaffolds_agp, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        YAHS_PATERNAL.out.binary
+            .map {
+                meta, binary ->
+                    return [ meta, binary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        YAHS_MATERNAL.out.binary
+            .map {
+                meta, binary ->
+                    return [ meta, binary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+            }
+    )
 
-//merqury_final
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.spectra-cn.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.spectra-cn.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.spectra-cn.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.spectra-cn.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.spectra-cn.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.spectra-cn.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-asm.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-asm.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-asm.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-cn.fl.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-cn.ln.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.spectra-cn.st.png" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_png
-//rclone move "${sample}_${ver}.0.hifiasm.completeness.stats" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_stats
-//rclone move "${sample}_${ver}.0.hifiasm.summary.qv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_qv
-//rclone move "${sample}_${ver}.0.hifiasm.hap1.p_ctg.qv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_qv
-//rclone move "${sample}_${ver}.0.hifiasm.hap2.p_ctg.qv" pawsey0812:oceanomics-assemblies/${sample}/${sample}_${ver}/merqury/${tolid}_qv
+    //
+    // Collect FCSGX files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        FCS_FCSGX_PATERNAL.out.fcs_gx_report
+            .map {
+                meta, fcs_gx_report ->
+                    return [ meta, fcs_gx_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        FCS_FCSGX_MATERNAL.out.fcs_gx_report
+            .map {
+                meta, fcs_gx_report ->
+                    return [ meta, fcs_gx_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        FCS_FCSGX_PATERNAL.out.taxonomy_report
+            .map {
+                meta, taxonomy_report ->
+                    return [ meta, taxonomy_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        FCS_FCSGX_MATERNAL.out.taxonomy_report
+            .map {
+                meta, taxonomy_report ->
+                    return [ meta, taxonomy_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+            }
+    )
 
+    //
+    // Collect TIARA files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        TIARA_TIARA_PATERNAL.out.classifications
+            .map {
+                meta, classifications ->
+                    return [ meta, classifications, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        TIARA_TIARA_MATERNAL.out.classifications
+            .map {
+                meta, classifications ->
+                    return [ meta, classifications, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        TIARA_TIARA_PATERNAL.out.log
+            .map {
+                meta, log ->
+                    return [ meta, log, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        TIARA_TIARA_MATERNAL.out.log
+            .map {
+                meta, log ->
+                    return [ meta, log, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        TIARA_TIARA_PATERNAL.out.fasta
+            .map {
+                meta, fasta ->
+                    return [ meta, fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        TIARA_TIARA_MATERNAL.out.fasta
+            .map {
+                meta, fasta ->
+                    return [ meta, fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+            }
+    )
+
+    //
+    // Collect concatenated BBMAP_FILTERBYNAME files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        CAT_SCAFFOLDS.out.cat_file
+            .map {
+                meta, cat_file ->
+                    return [ meta, cat_file, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/bbmap_filterbyname_cat" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        CAT_SCAFFOLDS.out.paternal_scaffold
+            .map {
+                meta, paternal_scaffold ->
+                    return [ meta, paternal_scaffold, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/bbmap_filterbyname_cat" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        CAT_SCAFFOLDS.out.maternal_scaffold
+            .map {
+                meta, maternal_scaffold ->
+                    return [ meta, maternal_scaffold, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/bbmap_filterbyname_cat" ]
+            }
+    )
+
+    //
+    // Collect final GFASTATS files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        GFASTATS_FINAL.out.assembly
+            .map {
+                meta, assembly ->
+                    return [ meta, assembly, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        GFASTATS_FINAL.out.assembly_summary
+            .map {
+                meta, assembly_summary ->
+                    return [ meta, assembly_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
+            }
+    )
+
+    //
+    // Collect final BUSCO files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO_FINAL.out.batch_summary
+            .map {
+                meta, batch_summary ->
+                    return [ meta, batch_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO_FINAL.out.short_summaries_txt
+            .map {
+                meta, short_summaries_txt ->
+                    return [ meta, short_summaries_txt, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO_FINAL.out.short_summaries_json
+            .map {
+                meta, short_summaries_json ->
+                    return [ meta, short_summaries_json, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+            }
+    )
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_BUSCO_FINAL.out.full_table
+    //        .map {
+    //            meta, full_table ->
+    //                return [ meta, full_table, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+    //        }
+    //)
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_BUSCO_FINAL.out.missing_busco_list
+    //        .map {
+    //            meta, missing_busco_list ->
+    //                return [ meta, missing_busco_list, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+    //        }
+    //)
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO_FINAL.out.single_copy_proteins
+            .map {
+                meta, single_copy_proteins ->
+                    return [ meta, single_copy_proteins, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+            }
+    )
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_BUSCO_FINAL.out.seq_dir
+    //        .map {
+    //            meta, seq_dir ->
+    //                return [ meta, seq_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+    //        }
+    //)
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO_FINAL.out.translated_dir
+            .map {
+                meta, translated_dir ->
+                    return [ meta, translated_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_BUSCO_FINAL.out.busco_dir
+            .map {
+                meta, busco_dir ->
+                    return [ meta, busco_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+            }
+    )
+    //ch_rclone_in = ch_rclone_in.mix(
+    //    BUSCO_GENERATEPLOT_FINAL.out.png
+    //        .map {
+    //            meta, png ->
+    //                return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+    //        }
+    //)
+
+    //
+    // Collect final MERQURY files for rclone
+    //
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.assembly_only_kmers_bed
+            .map {
+                meta, assembly_only_kmers_bed ->
+                    return [ meta, assembly_only_kmers_bed, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.assembly_only_kmers_wig
+            .map {
+                meta, assembly_only_kmers_wig ->
+                    return [ meta, assembly_only_kmers_wig, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.stats
+            .map {
+                meta, stats ->
+                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.dist_hist
+            .map {
+                meta, dist_hist ->
+                    return [ meta, dist_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_cn_fl_png
+            .map {
+                meta, spectra_cn_fl_png ->
+                    return [ meta, spectra_cn_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_cn_hist
+            .map {
+                meta, spectra_cn_hist ->
+                    return [ meta, spectra_cn_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_cn_ln_png
+            .map {
+                meta, spectra_cn_ln_png ->
+                    return [ meta, spectra_cn_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_cn_st_png
+            .map {
+                meta, spectra_cn_st_png ->
+                    return [ meta, spectra_cn_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_asm_fl_png
+            .map {
+                meta, spectra_asm_fl_png ->
+                    return [ meta, spectra_asm_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_asm_hist
+            .map {
+                meta, spectra_asm_hist ->
+                    return [ meta, spectra_asm_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_asm_ln_png
+            .map {
+                meta, spectra_asm_ln_png ->
+                    return [ meta, spectra_asm_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.spectra_asm_st_png
+            .map {
+                meta, spectra_asm_st_png ->
+                    return [ meta, spectra_asm_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.assembly_qv
+            .map {
+                meta, assembly_qv ->
+                    return [ meta, assembly_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.scaffold_qv
+            .map {
+                meta, scaffold_qv ->
+                    return [ meta, scaffold_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MERQURY_FINAL.out.read_ploidy
+            .map {
+                meta, read_ploidy ->
+                    return [ meta, read_ploidy, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
 
     //
     // MODULE: Run rclone

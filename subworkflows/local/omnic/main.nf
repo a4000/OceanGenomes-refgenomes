@@ -117,8 +117,8 @@ workflow OMNIC {
     ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
 
     emit:
+    fai      = SAMTOOLS_FAIDX.out.fai   // channel: [ val(meta), fai ]
     bam      = SAMTOOLS_SORT.out.bam    // channel: [ val(meta), bam ]
     bai      = SAMTOOLS_INDEX.out.bai   // channel: [ val(meta), bai ]
-    fai      = SAMTOOLS_FAIDX.out.fai   // channel: [ val(meta), fai ]
     versions = ch_versions              // channel: [ versions.yml ]
 }
