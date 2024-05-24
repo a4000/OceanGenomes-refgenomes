@@ -336,7 +336,7 @@ workflow OCEANGENOMESREFGENOMES {
     ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT_FINAL.out.versions.first())
 
     //
-    // MODULE: Run Merqury again CAT_SCAFFOLDS.out.
+    // MODULE: Run Merqury again
     //
     ch_merqury_fin_in = MERYL_COUNT.out.meryl_db.join(CAT_SCAFFOLDS.out.paternal_scaffold).join(CAT_SCAFFOLDS.out.maternal_scaffold)
         .map {
