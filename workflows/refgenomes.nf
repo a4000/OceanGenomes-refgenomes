@@ -38,7 +38,7 @@ include { MULTIQC                                           } from '../modules/n
 include { paramsSummaryMap                                  } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc                              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                            } from '../subworkflows/local/utils_nfcore_oceangenomesrefgenomes_pipeline'
+include { methodsDescriptionText                            } from '../subworkflows/local/utils_oceangenomesrefgenomes_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,7 +46,7 @@ include { methodsDescriptionText                            } from '../subworkfl
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow OCEANGENOMESREFGENOMES {
+workflow REFGENOMES {
 
     take:
     ch_samplesheet // channel: samplesheet read in from --input
