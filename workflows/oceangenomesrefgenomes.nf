@@ -5,7 +5,8 @@
 */
 
 include { HIFIADAPTERFILT                                   } from '../modules/local/hifiadapterfilt/main'
-include { FASTQC                                            } from '../modules/nf-core/fastqc/main'
+include { FASTQC as FASTQC_HIFI                             } from '../modules/nf-core/fastqc/main'
+include { FASTQC as FASTQC_HIC                              } from '../modules/nf-core/fastqc/main'
 include { MERYL_COUNT                                       } from '../modules/nf-core/meryl/count/main'
 include { MERYL_HISTOGRAM                                   } from '../modules/nf-core/meryl/histogram/main'
 include { GENOMESCOPE2                                      } from '../modules/nf-core/genomescope2/main'
@@ -79,13 +80,13 @@ workflow OCEANGENOMESREFGENOMES {
     ch_versions = ch_versions.mix(HIFIADAPTERFILT.out.versions.first())
 
     //
-    // MODULE: Run FastQC
+    // MODULE: Run FastQC on HiFi fastqc files
     //
-    FASTQC (
+    FASTQC_HIFI (
         HIFIADAPTERFILT.out.reads
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_HIFI.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC_HIFI.out.versions.first())
 
     //
     // MODULE: Run Meryl
@@ -121,6 +122,15 @@ workflow OCEANGENOMESREFGENOMES {
     )
 
     //
+    // MODULE: Run FastQC on Hi-C fastqc files
+    //
+    FASTQC_HIC (
+        CAT_HIC.out.cat_files
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_HIC.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC_HIC.out.versions.first())
+
+    //
     // MODULE: Run Hifiasm
     //
     ch_hifiasm_in = HIFIADAPTERFILT.out.reads.join(CAT_HIC.out.cat_files)
@@ -144,8 +154,9 @@ workflow OCEANGENOMESREFGENOMES {
 
     GFASTATS_PATERNAL (
         ch_gfastats_pat_in,
-        "hap1.fasta",
+        "fasta",
         "",
+        "hap1",
         [],
         [],
         [],
@@ -155,8 +166,9 @@ workflow OCEANGENOMESREFGENOMES {
 
     GFASTATS_MATERNAL (
         ch_gfastats_mat_in,
-        "hap2.fasta",
+        "fasta",
         "",
+        "hap2",
         [],
         [],
         [],
@@ -215,12 +227,14 @@ workflow OCEANGENOMESREFGENOMES {
         }
 
     OMNIC_PATERNAL (
-        ch_omnic_pat_in
+        ch_omnic_pat_in,
+        "hap1"
     )
     ch_versions = ch_versions.mix(OMNIC_PATERNAL.out.versions.first())
 
     OMNIC_MATERNAL (
-        ch_omnic_mat_in
+        ch_omnic_mat_in,
+        "hap2"
     )
     ch_versions = ch_versions.mix(OMNIC_MATERNAL.out.versions.first())
 
@@ -231,12 +245,14 @@ workflow OCEANGENOMESREFGENOMES {
     ch_yahs_mat_in = OMNIC_MATERNAL.out.bam.join(GFASTATS_MATERNAL.out.assembly).join(OMNIC_MATERNAL.out.fai)
 
     YAHS_PATERNAL (
-        ch_yahs_pat_in
+        ch_yahs_pat_in,
+        "hap1"
     )
     ch_versions = ch_versions.mix(YAHS_PATERNAL.out.versions.first())
 
     YAHS_MATERNAL (
-        ch_yahs_pat_in
+        ch_yahs_pat_in,
+        "hap2"
     )
     ch_versions = ch_versions.mix(YAHS_MATERNAL.out.versions.first())
 
@@ -245,13 +261,15 @@ workflow OCEANGENOMESREFGENOMES {
     //
     FCS_FCSGX_PATERNAL (
         YAHS_PATERNAL.out.scaffolds_fasta,
-        params.gx_db
+        params.gx_db,
+        "hap1"
     )
     ch_versions = ch_versions.mix(FCS_FCSGX_PATERNAL.out.versions.first())
 
     FCS_FCSGX_MATERNAL (
         YAHS_MATERNAL.out.scaffolds_fasta,
-        params.gx_db
+        params.gx_db,
+        "hap2"
     )
     ch_versions = ch_versions.mix(FCS_FCSGX_MATERNAL.out.versions.first())
 
@@ -259,12 +277,14 @@ workflow OCEANGENOMESREFGENOMES {
     // MODULE: Run Tiara
     //
     TIARA_TIARA_PATERNAL (
-        YAHS_PATERNAL.out.scaffolds_fasta
+        YAHS_PATERNAL.out.scaffolds_fasta,
+        "hap1"
     )
     ch_versions = ch_versions.mix(TIARA_TIARA_PATERNAL.out.versions.first())
 
     TIARA_TIARA_MATERNAL (
-        YAHS_MATERNAL.out.scaffolds_fasta
+        YAHS_MATERNAL.out.scaffolds_fasta,
+        "hap2"
     )
     ch_versions = ch_versions.mix(TIARA_TIARA_MATERNAL.out.versions.first())
 
@@ -309,6 +329,7 @@ workflow OCEANGENOMESREFGENOMES {
         ch_gfastats_fin_in,
         "fasta",
         "",
+        "final",
         [],
         [],
         [],
@@ -356,14 +377,14 @@ workflow OCEANGENOMESREFGENOMES {
         HIFIADAPTERFILT.out.reads
             .map {
                 meta, reads ->
-                    return [ meta, reads, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifi" ]
+                    return [ meta, reads, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIADAPTERFILT.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifi/qc_stats" ]
+                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt/qc_stats" ]
             }
     )
 
@@ -436,20 +457,6 @@ workflow OCEANGENOMESREFGENOMES {
                     return [ meta, summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
             }
     )
-    ch_rclone_in = ch_rclone_in.mix(
-        GENOMESCOPE2.out.lookup_table
-            .map {
-                meta, lookup_table ->
-                    return [ meta, lookup_table, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
-            }
-    )
-    ch_rclone_in = ch_rclone_in.mix(
-        GENOMESCOPE2.out.fitted_histogram_png
-            .map {
-                meta, fitted_histogram_png ->
-                    return [ meta, fitted_histogram_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
-            }
-    )
 
     //
     // Collect HIFIASM files for rclone
@@ -483,31 +490,10 @@ workflow OCEANGENOMESREFGENOMES {
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        HIFIASM.out.processed_contigs
-            .map {
-                meta, processed_contigs ->
-                    return [ meta, processed_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
-            }
-    )
-    ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.processed_unitigs
             .map {
                 meta, processed_unitigs ->
                     return [ meta, processed_unitigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
-            }
-    )
-    ch_rclone_in = ch_rclone_in.mix(
-        HIFIASM.out.primary_contigs
-            .map {
-                meta, primary_contigs ->
-                    return [ meta, primary_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
-            }
-    )
-    ch_rclone_in = ch_rclone_in.mix(
-        HIFIASM.out.alternate_contigs
-            .map {
-                meta, alternate_contigs ->
-                    return [ meta, alternate_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
@@ -588,41 +574,6 @@ workflow OCEANGENOMESREFGENOMES {
                     return [ meta, short_summaries_json, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
             }
     )
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_BUSCO.out.full_table
-    //        .map {
-    //            meta, full_table ->
-    //                return [ meta, full_table, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
-    //        }
-    //)
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_BUSCO.out.missing_busco_list
-    //        .map {
-    //            meta, missing_busco_list ->
-    //                return [ meta, missing_busco_list, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
-    //        }
-    //)
-    ch_rclone_in = ch_rclone_in.mix(
-        BUSCO_BUSCO.out.single_copy_proteins
-            .map {
-                meta, single_copy_proteins ->
-                    return [ meta, single_copy_proteins, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
-            }
-    )
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_BUSCO.out.seq_dir
-    //        .map {
-    //            meta, seq_dir ->
-    //                return [ meta, seq_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
-    //        }
-    //)
-    ch_rclone_in = ch_rclone_in.mix(
-        BUSCO_BUSCO.out.translated_dir
-            .map {
-                meta, translated_dir ->
-                    return [ meta, translated_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
-            }
-    )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO.out.busco_dir
             .map {
@@ -630,13 +581,13 @@ workflow OCEANGENOMESREFGENOMES {
                     return [ meta, busco_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
             }
     )
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_GENERATEPLOT.out.png
-    //        .map {
-    //            meta, png ->
-    //                return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
-    //        }
-    //)
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_GENERATEPLOT.out.png
+            .map {
+                meta, png ->
+                    return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+            }
+    )
 
     //
     // Collect MERQURY files for rclone
@@ -984,41 +935,6 @@ workflow OCEANGENOMESREFGENOMES {
                     return [ meta, short_summaries_json, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
             }
     )
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_BUSCO_FINAL.out.full_table
-    //        .map {
-    //            meta, full_table ->
-    //                return [ meta, full_table, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
-    //        }
-    //)
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_BUSCO_FINAL.out.missing_busco_list
-    //        .map {
-    //            meta, missing_busco_list ->
-    //                return [ meta, missing_busco_list, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
-    //        }
-    //)
-    ch_rclone_in = ch_rclone_in.mix(
-        BUSCO_BUSCO_FINAL.out.single_copy_proteins
-            .map {
-                meta, single_copy_proteins ->
-                    return [ meta, single_copy_proteins, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
-            }
-    )
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_BUSCO_FINAL.out.seq_dir
-    //        .map {
-    //            meta, seq_dir ->
-    //                return [ meta, seq_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
-    //        }
-    //)
-    ch_rclone_in = ch_rclone_in.mix(
-        BUSCO_BUSCO_FINAL.out.translated_dir
-            .map {
-                meta, translated_dir ->
-                    return [ meta, translated_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
-            }
-    )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO_FINAL.out.busco_dir
             .map {
@@ -1026,13 +942,13 @@ workflow OCEANGENOMESREFGENOMES {
                     return [ meta, busco_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
             }
     )
-    //ch_rclone_in = ch_rclone_in.mix(
-    //    BUSCO_GENERATEPLOT_FINAL.out.png
-    //        .map {
-    //            meta, png ->
-    //                return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
-    //        }
-    //)
+    ch_rclone_in = ch_rclone_in.mix(
+        BUSCO_GENERATEPLOT_FINAL.out.png
+            .map {
+                meta, png ->
+                    return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+            }
+    )
 
     //
     // Collect final MERQURY files for rclone
@@ -1094,13 +1010,6 @@ workflow OCEANGENOMESREFGENOMES {
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        MERQURY_FINAL.out.spectra_asm_fl_png
-            .map {
-                meta, spectra_asm_fl_png ->
-                    return [ meta, spectra_asm_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
-            }
-    )
-    ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_asm_hist
             .map {
                 meta, spectra_asm_hist ->
@@ -1112,13 +1021,6 @@ workflow OCEANGENOMESREFGENOMES {
             .map {
                 meta, spectra_asm_ln_png ->
                     return [ meta, spectra_asm_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
-            }
-    )
-    ch_rclone_in = ch_rclone_in.mix(
-        MERQURY_FINAL.out.spectra_asm_st_png
-            .map {
-                meta, spectra_asm_st_png ->
-                    return [ meta, spectra_asm_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(

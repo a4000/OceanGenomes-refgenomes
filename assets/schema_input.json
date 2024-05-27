@@ -39,15 +39,11 @@
                 "type": "string",
                 "meta": ["tolid"]
             },
-            "gsize": {
-                "type": "string",
-                "meta": ["gsize"]
-            },
             "taxid": {
                 "type": "string",
                 "meta": ["taxid"]
             }
         },
-        "required": ["sample", "hifi_dir", "taxid"]
+        "required": ["sample", "hifi_dir", "version", "tolid", "taxid"]
     }
 }

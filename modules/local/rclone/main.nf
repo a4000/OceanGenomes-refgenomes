@@ -19,7 +19,7 @@ process RCLONE {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     mkdir files_to_move
-    cp -r $files files_to_move
+    cp -rL $files files_to_move
     cd files_to_move
 
     rclone move \\
@@ -28,6 +28,7 @@ process RCLONE {
         $args
 
     cd ../
+    rm -r files_to_move
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

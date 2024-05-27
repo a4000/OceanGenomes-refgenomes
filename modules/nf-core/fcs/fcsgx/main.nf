@@ -9,6 +9,7 @@ process FCS_FCSGX {
     input:
     tuple val(meta), path(assembly)
     path gxdb
+    val(haplotype)
 
     output:
     tuple val(meta), path("out/*.fcs_gx_report.txt"), emit: fcs_gx_report
@@ -33,7 +34,12 @@ process FCS_FCSGX {
         --out-dir ./out \\
         --gx-db $gxdb \\
         --tax-id ${meta.taxid} \\
+        --out-basename {fasta-basename}_${haplotype}.{tax-id} \\
         $args
+
+    cd out
+    find . -name "*.fcs_gx_report.txt" -exec sh -c 'file=`basename {}`; mv "\$file" "\${file%%_*}_${haplotype}_scaffolds_final.${meta.taxids}.fcs_gx_report.txt"' \\;
+    find . -name "*.taxonomy.rpt" -exec sh -c 'file=`basename {}`; mv "\$file" "\${file%%_*}_${haplotype}_scaffolds_final.${meta.taxids}.taxonomy.rpt"' \\;
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
