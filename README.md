@@ -12,106 +12,86 @@
 
 ## Introduction
 
-**OceanGenomes-refgenomes** is OceanGenomes reference genomes pipeline.
+**OceanGenomes-refgenomes** is OceanGenome's reference genome assembly pipeline that combines both hifi and hi-C input data.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
-
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+<p align="center">
+    <img src="docs/images/assembly-pipeline-overview.png" alt="OceanGenomes/refgenomes workflow overview" width="60%">
+</p>
 
 1. Filter and convert bam files to fastq filesc([`HiFiAdapterFilt`](https://github.com/sheinasim/HiFiAdapterFilt))
 2. PacBio Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-5. Count k-mers ([`Meryl`](https://github.com/marbl/meryl))
-6. Estimate genome size ([`GenomeScope2`](https://github.com/schatzlab/genomescope))
-3. Assemble PacBio reads ([`hifiasm_M2`](https://github.com/chhylp123/hifiasm))
-4. Assembly stats ([`gfastats_M2`](https://github.com/vgl-hub/gfastats))
-7. Illumina Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-8. Assemble Illumina reads ([`hifiasm_M4`](https://github.com/chhylp123/hifiasm))
-9. Assembly stats ([`gfastats_M5`](https://github.com/vgl-hub/gfastats))
-10. K-mer assembly QC ([`Merqury`](https://github.com/marbl/merqury))
-11. Gene assembly QC ([`BUSCO_M5`](https://busco.ezlab.org/))
-12. Create index ([`samtools_M6a`](https://www.htslib.org/))
-13. Index files ([`bwa_M6a`](https://github.com/lh3/bwa))
-14. Align Hi-C reads ([`bwa_M6b`](https://github.com/lh3/bwa))
-15. Map pairs ([`pairtools`](https://pairtools.readthedocs.io/en/latest/))
-16. Sort and index ([`samtools_M6b`](https://www.htslib.org/))
-17. Create scaffold ([`YAHS`](https://github.com/c-zhou/yahs))
-18. Create report ([`Tiara`](https://github.com/ibe-uw/tiara))
-19. Create report ([`fcs-gx`](https://github.com/ncbi/fcs-gx))
-20. Filter scaffolds ([`bbmap`](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbmap-guide/))
-21. Scaffold stats ([`gfastats_M9`](https://github.com/vgl-hub/gfastats))
-22. Gene assembly QC([`BUSCO_M9`](https://busco.ezlab.org/))
-23. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+3. Count k-mers ([`Meryl`](https://github.com/marbl/meryl))
+4. Estimate genome size ([`GenomeScope2`](https://github.com/schatzlab/genomescope))
+5. Illumina Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+6. Assemble Pacbio & Illumina reads ([`Hifiasm`](https://github.com/chhylp123/hifiasm))
+7. Assembly stats ([`Gfastats`](https://github.com/vgl-hub/gfastats))
+8. Gene assembly QC ([`BUSCO`](https://busco.ezlab.org/))
+9. K-mer assembly QC ([`Merqury`](https://github.com/marbl/merqury))
+10. Create index ([`Samtools`](https://www.htslib.org/))
+11. Index assemble and align Hi-C reads ([`BWA`](https://github.com/lh3/bwa))
+12. Map pairs ([`Pairtools`](https://pairtools.readthedocs.io/en/latest/))
+13. Sort and index ([`Samtools`](https://www.htslib.org/))
+14. Create scaffold ([`YAHS`](https://github.com/c-zhou/yahs))
+15. Create report ([`fcs-gx`](https://github.com/ncbi/fcs-gx))
+16. Create report ([`Tiara`](https://github.com/ibe-uw/tiara))
+17. Filter scaffolds ([`BBMap`](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbmap-guide/))
+18. Scaffold stats ([`Gfastats`](https://github.com/vgl-hub/gfastats))
+19. Scaffold QC ([`BUSCO`](https://busco.ezlab.org/))
+20. Scaffold QC ([`Merqury`](https://github.com/marbl/merqury))
+21. copy files to backup location ([`Rclone`](https://rclone.org/))
+22. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Usage
 
 > [!NOTE]
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
-
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+> If you are new to Nextflow, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow.
 
 First, prepare a samplesheet with your input data that looks as follows:
 
 `samplesheet.csv`:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,hifi_dir,hic_dir,version,tolid,taxids
+OG88,hifi_bams/OG89,hic_fastqs/OG89,1,163129,163129
+OG89,hifi_bams/OG89,,1,163129,163129
+OG90,hifi_fastqs/OG90,hic_fastqs/OG90,1,163129,163129
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
+Each row represents a sample. The hifi_dir column must point to a directory that contains bam files or fastq files. The hic_dir column can point to a directory containing fastq files, however this column can be left blank if there isn't Hi-C data for this sample.
 
 Now, you can run the pipeline using:
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
-
 ```bash
-nextflow run nf-core/oceangenomesrefgenomes \
+nextflow run Computational-Biology-OceanOmics/OceanGenomes-refgenomes \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
-   --outdir <OUTDIR>
+   --outdir <OUTDIR> \
+   --busco_db /path/to/buscodb \
+   --gx_db /path/to/gxdb \
+   --rclone_dest <DESTINATION> \
+   --bind_dir /scratch
 ```
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
 > see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/oceangenomesrefgenomes/usage) and the [parameter documentation](https://nf-co.re/oceangenomesrefgenomes/parameters).
+For more details and further functionality, please refer to the [usage documentation](https://github.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes/blob/master/docs/usage.md) and the [parameter documentation](https://github.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes/blob/master/docs/parameters.md).
 
 ## Pipeline output
 
 To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/oceangenomesrefgenomes/results) tab on the nf-core website pipeline page.
 For more details about the output files and reports, please refer to the
-[output documentation](https://nf-co.re/oceangenomesrefgenomes/output).
+[output documentation](https://github.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes/blob/master/docs/output.md).
 
 ## Credits
 
-nf-core/oceangenomesrefgenomes was originally written by Adam Bennett.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#oceangenomesrefgenomes` channel](https://nfcore.slack.com/channels/oceangenomesrefgenomes) (you can join with [this invite](https://nf-co.re/join/slack)).
+OceanGenomes-refgenomes was originally written by Emma de Jong and was converted to Nextflow by Adam Bennett. This version was built on top of the nf-core template.
 
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use nf-core/oceangenomesrefgenomes for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+<!-- If you use OceanGenomes-refgenomes for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

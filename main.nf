@@ -17,22 +17,11 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { OCEANGENOMESREFGENOMES  } from './workflows/oceangenomesrefgenomes'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_oceangenomesrefgenomes_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_oceangenomesrefgenomes_pipeline'
+include { REFGENOMES              } from './workflows/refgenomes'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_oceangenomesrefgenomes_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_oceangenomesrefgenomes_pipeline'
 
-include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_oceangenomesrefgenomes_pipeline'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
+include { getGenomeAttribute      } from './subworkflows/local/utils_oceangenomesrefgenomes_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +32,7 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_OCEANGENOMESREFGENOMES {
+workflow OCEANGENOMES_REFGENOMES {
 
     take:
     samplesheet // channel: samplesheet read in from --input
@@ -53,12 +42,12 @@ workflow NFCORE_OCEANGENOMESREFGENOMES {
     //
     // WORKFLOW: Run pipeline
     //
-    OCEANGENOMESREFGENOMES (
+    REFGENOMES (
         samplesheet
     )
 
     emit:
-    multiqc_report = OCEANGENOMESREFGENOMES.out.multiqc_report // channel: /path/to/multiqc_report.html
+    multiqc_report = REFGENOMES.out.multiqc_report // channel: /path/to/multiqc_report.html
 
 }
 /*
@@ -87,7 +76,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_OCEANGENOMESREFGENOMES (
+    OCEANGENOMES_REFGENOMES (
         PIPELINE_INITIALISATION.out.samplesheet
     )
 
@@ -101,7 +90,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_OCEANGENOMESREFGENOMES.out.multiqc_report
+        OCEANGENOMES_REFGENOMES.out.multiqc_report
     )
 }
 
