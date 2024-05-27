@@ -10,8 +10,8 @@ process BUSCO_GENERATEPLOT {
     tuple val(meta), path(short_summary_txt, stageAs: 'busco/*')
 
     output:
-    path '*.png'        , emit: png
-    path "versions.yml" , emit: versions
+    tuple val(meta), path('*.png'), emit: png
+    path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

@@ -10,6 +10,7 @@ process SAMTOOLS_SORT {
     input:
     tuple val(meta) , path(bam)
     tuple val(meta2), path(fasta)
+    val(haplotype)
 
     output:
     tuple val(meta), path("*.bam"),     emit: bam,  optional: true
@@ -40,7 +41,7 @@ process SAMTOOLS_SORT {
         -T ${prefix} \\
         --threads $task.cpus \\
         ${reference} \\
-        -o ${prefix}.${extension} \\
+        -o ${prefix}_${haplotype}.${extension} \\
         -
 
     cat <<-END_VERSIONS > versions.yml

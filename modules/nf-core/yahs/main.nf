@@ -9,6 +9,7 @@ process YAHS {
 
     input:
     tuple val(meta), path(hic_map), path(fasta), path(fai)
+    val(haplotype)
 
     output:
     tuple val(meta), path("*scaffolds_final.fa") , emit: scaffolds_fasta
@@ -25,7 +26,7 @@ process YAHS {
 
     """
     yahs $args \\
-        -o $prefix \\
+        -o ${prefix}_${haplotype} \\
         $fasta \\
         $hic_map
 

@@ -11,6 +11,7 @@ process GFASTATS {
     tuple val(meta), path(assembly), path(stats)   // input.[fasta|fastq|gfa][.gz]
     val out_fmt                       // output format (fasta/fastq/gfa)
     val target                        // target specific sequence by header, optionally with coordinates (optional).
+    val haplotype
     path agpfile                      // -a --agp-to-path <file> converts input agp to path and replaces existing paths.
     path include_bed                  // -i --include-bed <file> generates output on a subset list of headers or coordinates in 0-based bed format.
     path exclude_bed                  // -e --exclude-bed <file> opposite of --include-bed. They can be combined (no coordinates).
@@ -42,11 +43,11 @@ process GFASTATS {
         $ibed \\
         $ebed \\
         $sak \\
-        --out-format ${prefix}.${out_fmt}.gz \\
+        --out-format ${prefix}_${haplotype}.${out_fmt}.gz \\
         $assembly \\
         \$genome_size \\
         $target \\
-        > ${prefix}.assembly_summary
+        > ${prefix}_${haplotype}.assembly_summary
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

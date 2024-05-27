@@ -13,6 +13,7 @@ workflow OMNIC {
 
     take:
     ch_omnic_in     // channel: [ val(meta), [ reads ], assembly ]
+    ch_haplotype    // channel: val(haplotype)
 
     main:
 
@@ -104,7 +105,8 @@ workflow OMNIC {
     //
     SAMTOOLS_SORT (
         PAIRTOOLS_SPLIT.out.bam,
-        [[], []]
+        [[], []],
+        ch_haplotype
     )
     ch_versions = ch_versions.mix(SAMTOOLS_SORT.out.versions.first())
 
