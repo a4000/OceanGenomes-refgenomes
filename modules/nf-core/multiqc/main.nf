@@ -27,6 +27,10 @@ process MULTIQC {
     def extra_config = extra_multiqc_config ? "--config $extra_multiqc_config" : ''
     def logo = multiqc_logo ? /--cl-config 'custom_logo: "${multiqc_logo}"'/ : ''
     """
+    for file in \$(ls */*png); do
+        mv \$file \$(echo \$file | sed 's/.png/_mqc.png/g')
+    done
+
     multiqc \\
         --force \\
         $args \\
