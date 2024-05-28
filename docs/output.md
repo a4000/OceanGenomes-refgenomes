@@ -1,4 +1,4 @@
-# nf-core/oceangenomesrefgenomes: Output
+# Computational-Biology-OceanOmics/OceanGenomes-refgenomes: Output
 
 ## Introduction
 

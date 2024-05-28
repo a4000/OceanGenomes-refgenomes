@@ -371,6 +371,51 @@ workflow REFGENOMES {
     ch_versions = ch_versions.mix(MERQURY_FINAL.out.versions.first())
 
     //
+    // Collate and save software versions
+    //
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_pipeline_software_mqc_versions.yml', sort: true, newLine: true)
+        .set { ch_collated_versions }
+
+    //
+    // MODULE: MultiQC
+    //
+    ch_multiqc_config                     = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    ch_multiqc_custom_config              = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
+    ch_multiqc_logo                       = params.multiqc_logo ? Channel.fromPath(params.multiqc_logo, checkIfExists: true) : Channel.empty()
+    summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+    ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false))
+    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_GENERATEPLOT.out.png.map { meta, png -> return [ png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.linear_plot_png.map { meta, linear_plot_png -> return [ linear_plot_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.transformed_linear_plot_png.map { meta, transformed_linear_plot_png -> return [ transformed_linear_plot_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.log_plot_png.map { meta, log_plot_png -> return [ log_plot_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.transformed_log_plot_png.map { meta, transformed_log_plot_png -> return [ transformed_log_plot_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_fl_png.map { meta, spectra_cn_fl_png -> return [ spectra_cn_fl_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_ln_png.map { meta, spectra_cn_ln_png -> return [ spectra_cn_ln_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_st_png.map { meta, spectra_cn_st_png -> return [ spectra_cn_st_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_fl_png.map { meta, spectra_asm_fl_png -> return [ spectra_asm_fl_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_ln_png.map { meta, spectra_asm_ln_png -> return [ spectra_asm_ln_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_st_png.map { meta, spectra_asm_st_png -> return [ spectra_asm_st_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_fl_png.map { meta, spectra_cn_fl_png -> return [ spectra_cn_fl_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_ln_png.map { meta, spectra_cn_ln_png -> return [ spectra_cn_ln_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_st_png.map { meta, spectra_cn_st_png -> return [ spectra_cn_st_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_fl_png.map { meta, spectra_asm_fl_png -> return [ spectra_asm_fl_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_ln_png.map { meta, spectra_asm_ln_png -> return [ spectra_asm_ln_png ] })
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_st_png.map { meta, spectra_asm_st_png -> return [ spectra_asm_st_png ] })
+
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
+    )
+
+    //
     // Collect HIFIADAPTERFILT files for rclone
     //
     ch_rclone_in = ch_rclone_in.mix(
@@ -1052,34 +1097,6 @@ workflow REFGENOMES {
         ch_rclone_in
     )
     ch_versions = ch_versions.mix(RCLONE.out.versions.first())
-
-    //
-    // Collate and save software versions
-    //
-    softwareVersionsToYAML(ch_versions)
-        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_pipeline_software_mqc_versions.yml', sort: true, newLine: true)
-        .set { ch_collated_versions }
-
-    //
-    // MODULE: MultiQC
-    //
-    ch_multiqc_config                     = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config              = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-    ch_multiqc_logo                       = params.multiqc_logo ? Channel.fromPath(params.multiqc_logo, checkIfExists: true) : Channel.empty()
-    summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-    ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
-    ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false))
-
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
-    )
 
     emit:
     multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html

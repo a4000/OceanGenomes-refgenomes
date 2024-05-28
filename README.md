@@ -2,14 +2,14 @@
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/oceangenomesrefgenomes)
+[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes)
 
 ## Introduction
 
-**OceanGenomes-refgenomes** is OceanGenome's reference genome assembly pipeline that combines both hifi and hi-C input data.
+**Computational-Biology-OceanOmics/OceanGenomes-refgenomes** is OceanGenome's reference genome assembly pipeline that combines both hifi and hi-C input data.
 
 <p align="center">
-    <img src="docs/images/assembly-pipeline-overview.png" alt="OceanGenomes/refgenomes workflow overview" width="100%">
+    <img src="docs/images/assembly-pipeline-overview.png" alt="Computational-Biology-OceanOmics/OceanGenomes-refgenomes workflow overview" width="100%">
 </p>
 
 1. Filter and convert bam files to fastq filesc([`HiFiAdapterFilt`](https://github.com/sheinasim/HiFiAdapterFilt))
@@ -79,7 +79,7 @@ For details about the output files and reports, please refer to the
 
 ## Credits
 
-OceanGenomes-refgenomes was originally written by Emma de Jong and was converted to Nextflow by Adam Bennett. This version was built on top of the nf-core template.
+Computational-Biology-OceanOmics/OceanGenomes-refgenomes was originally written by Emma de Jong and was converted to Nextflow by Adam Bennett. This version was built on top of the nf-core template.
 
 ## Citations
 
