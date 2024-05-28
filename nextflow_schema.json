@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/oceangenomesrefgenomes/master/nextflow_schema.json",
-    "title": "nf-core/oceangenomesrefgenomes pipeline parameters",
+    "$id": "https://raw.githubusercontent.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes/master/nextflow_schema.json",
+    "title": "Computational-Biology-OceanOmics/OceanGenomes-refgenomes pipeline parameters",
     "description": "OceanGenomes reference genomes pipeline",
     "type": "object",
     "definitions": {

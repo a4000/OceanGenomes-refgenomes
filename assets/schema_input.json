@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/oceangenomesrefgenomes/master/assets/schema_input.json",
-    "title": "nf-core/oceangenomesrefgenomes pipeline - params.input schema",
+    "$id": "https://raw.githubusercontent.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes/master/assets/schema_input.json",
+    "title": "Computational-Biology-OceanOmics/OceanGenomes-refgenomes pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
