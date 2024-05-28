@@ -24,7 +24,7 @@ process BUSCO_GENERATEPLOT {
         $args \\
         -wd busco
 
-    mv ./busco/busco_figure.png ${prefix}.png
+    mv ./busco/busco_figure.png ${meta.id}_${prefix}.png
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
