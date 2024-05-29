@@ -6,15 +6,33 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
-
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [FastQC](#fastqc) - Raw read QC
+- [HiFiAdapterFilt](#hifiadapterfilt) - HiFi filtered fastqs
+- [Meryl](#meryl) - K-mer counts
+- [GenomeScope2](#genomescope2) - Genome estimated stats
+- [FastQC](#fastqc) - HiFi and Hi-C fastq QC
+- [Hifiasm](#hifiasm) - Assembly
+- [BWA](#bwa) - Index and bam file
+- [Pairtools](#pairtools) - Pair maps
+- [Samtools](#samtools) - Indexes and bam files
+- [YAHS](#yahs) - Scaffolds
+- [fcs-gx](#fcs-gx) - Report
+- [Tiara](#tiara) - Report
+- [BBMap](#bbmap) - filtered scaffolds
+- [Gfastats](#gfastats) - Assembly/scaffold stats
+- [BUSCO](#busco) - Assembly/scaffold QC
+- [Merqury](#merqury) - Assembly/scaffold QC
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+
+### HiFiAdapterFilt
+
+### Meryl
+
+### GenomeScope2
 
 ### FastQC
 
@@ -35,9 +53,27 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ![MultiQC - FastQC adapter content plot](images/mqc_fastqc_adapter.png)
 
-:::note
-The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
-:::
+### Hifiasm
+
+### BWA
+
+### Pairtools
+
+### Samtools
+
+### YAHS
+
+### fcs-gx
+
+### Tiara
+
+### BBMap
+
+### Gfastats
+
+### BUSCO
+
+### Merqury
 
 ### MultiQC
 

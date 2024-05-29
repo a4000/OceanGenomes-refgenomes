@@ -1,4 +1,4 @@
 sample,hifi_dir,hic_dir,version,tolid,taxid
 SAMPLE_HIC,/path/to/hifi/bam/files,/path/to/hic/fastq/files,1,1,123456
-SAMPLE_NO_HIC,/path/to/hifi/bam/files,,2,1,123456
-SAMPLE_FQ_HIFI,/path/to/hifi/fastq/files,/path/to/hic/fastq/files,3,1,123456
+SAMPLE_NO_HIC,/path/to/hifi/bam/files,,1,1,123456
+SAMPLE_FQ_HIFI,/path/to/hifi/fastq/files,/path/to/hic/fastq/files,1,1,123456
