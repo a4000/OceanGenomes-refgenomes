@@ -60,10 +60,10 @@ nextflow run Computational-Biology-OceanOmics/OceanGenomes-refgenomes \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
    --outdir <OUTDIR> \
-   --busco_db /path/to/buscodb \
-   --gx_db /path/to/gxdb \
-   --rclone_dest <DESTINATION> \
-   --bind_dir /scratch
+   --buscodb /path/to/buscodb \
+   --gxdb /path/to/gxdb \
+   --rclonedest <DESTINATION> \
+   --binddir /scratch
 ```
 
 > [!WARNING]

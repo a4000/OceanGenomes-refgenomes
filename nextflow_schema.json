@@ -54,28 +54,28 @@
                     "description": "k value to use with Meryl.",
                     "default": 31
                 },
-                "busco_mode": {
+                "buscomode": {
                     "type": "string",
                     "description": "Busco mode. Can be 'genome', 'ogs', or 'trans'.",
                     "enum": ["genome", "ogs", "trans"],
                     "default": "genome"
                 },
-                "busco_db": {
+                "buscodb": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
                     "description": "Path to Busco lineage database."
                 },
-                "gx_db": {
+                "gxdb": {
                     "type": "string",
                     "description": "Path to FCS-GX database."
                 },
-                "rclone_dest": {
+                "rclonedest": {
                     "type": "string",
                     "description": "source:destination for rclone",
                     "default": "pawsey0812:oceanomics-assemblies"
                 },
-                "bind_dir": {
+                "binddir": {
                     "type": "string",
                     "description": "Directory to bind (e.g., '/scratch')."
                 }

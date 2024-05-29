@@ -187,8 +187,8 @@ workflow REFGENOMES {
     //
     BUSCO_BUSCO (
         ch_gfastats_assemblies,
-        params.busco_mode,
-        params.busco_db,
+        params.buscomode,
+        params.buscodb,
         []
     )
     ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
@@ -261,14 +261,14 @@ workflow REFGENOMES {
     //
     FCS_FCSGX_PATERNAL (
         YAHS_PATERNAL.out.scaffolds_fasta,
-        params.gx_db,
+        params.gxdb,
         "hap1"
     )
     ch_versions = ch_versions.mix(FCS_FCSGX_PATERNAL.out.versions.first())
 
     FCS_FCSGX_MATERNAL (
         YAHS_MATERNAL.out.scaffolds_fasta,
-        params.gx_db,
+        params.gxdb,
         "hap2"
     )
     ch_versions = ch_versions.mix(FCS_FCSGX_MATERNAL.out.versions.first())
@@ -342,8 +342,8 @@ workflow REFGENOMES {
     //
     BUSCO_BUSCO_FINAL (
         CAT_SCAFFOLDS.out.cat_file,
-        params.busco_mode,
-        params.busco_db,
+        params.buscomode,
+        params.buscodb,
         []
     )
     ch_versions = ch_versions.mix(BUSCO_BUSCO_FINAL.out.versions.first())
@@ -422,14 +422,14 @@ workflow REFGENOMES {
         HIFIADAPTERFILT.out.reads
             .map {
                 meta, reads ->
-                    return [ meta, reads, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt" ]
+                    return [ meta, reads, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIADAPTERFILT.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt/qc_stats" ]
+                    return [ meta, stats, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt/qc_stats" ]
             }
     )
 
@@ -446,14 +446,14 @@ workflow REFGENOMES {
         TAR.out.tar_file
             .map {
                 meta, meryl_db ->
-                    return [ meta, meryl_db, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
+                    return [ meta, meryl_db, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERYL_HISTOGRAM.out.hist
             .map {
                 meta, hist ->
-                    return [ meta, hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
+                    return [ meta, hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
             }
     )
 
@@ -464,42 +464,42 @@ workflow REFGENOMES {
         GENOMESCOPE2.out.linear_plot_png
             .map {
                 meta, linear_plot_png ->
-                    return [ meta, linear_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, linear_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.transformed_linear_plot_png
             .map {
                 meta, transformed_linear_plot_png ->
-                    return [ meta, transformed_linear_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, transformed_linear_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.log_plot_png
             .map {
                 meta, log_plot_png ->
-                    return [ meta, log_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, log_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.transformed_log_plot_png
             .map {
                 meta, transformed_log_plot_png ->
-                    return [ meta, transformed_log_plot_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, transformed_log_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.model
             .map {
                 meta, model ->
-                    return [ meta, model, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, model, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.summary
             .map {
                 meta, summary ->
-                    return [ meta, summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
             }
     )
 
@@ -510,56 +510,56 @@ workflow REFGENOMES {
         HIFIASM.out.raw_unitigs
             .map {
                 meta, raw_unitigs ->
-                    return [ meta, raw_unitigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, raw_unitigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.corrected_reads
             .map {
                 meta, corrected_reads ->
-                    return [ meta, corrected_reads, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, corrected_reads, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.source_overlaps
             .map {
                 meta, source_overlaps ->
-                    return [ meta, source_overlaps, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, source_overlaps, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.reverse_overlaps
             .map {
                 meta, reverse_overlaps ->
-                    return [ meta, reverse_overlaps, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, reverse_overlaps, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.processed_unitigs
             .map {
                 meta, processed_unitigs ->
-                    return [ meta, processed_unitigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, processed_unitigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.paternal_contigs
             .map {
                 meta, paternal_contigs ->
-                    return [ meta, paternal_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, paternal_contigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.maternal_contigs
             .map {
                 meta, maternal_contigs ->
-                    return [ meta, maternal_contigs, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, maternal_contigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.log
             .map {
                 meta, log ->
-                    return [ meta, log, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, log, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
             }
     )
 
@@ -570,28 +570,28 @@ workflow REFGENOMES {
         GFASTATS_PATERNAL.out.assembly
             .map {
                 meta, assembly ->
-                    return [ meta, assembly, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GFASTATS_MATERNAL.out.assembly
             .map {
                 meta, assembly ->
-                    return [ meta, assembly, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GFASTATS_PATERNAL.out.assembly_summary
             .map {
                 meta, assembly_summary ->
-                    return [ meta, assembly_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GFASTATS_MATERNAL.out.assembly_summary
             .map {
                 meta, assembly_summary ->
-                    return [ meta, assembly_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
             }
     )
 
@@ -602,35 +602,35 @@ workflow REFGENOMES {
         BUSCO_BUSCO.out.batch_summary
             .map {
                 meta, batch_summary ->
-                    return [ meta, batch_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, batch_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO.out.short_summaries_txt
             .map {
                 meta, short_summaries_txt ->
-                    return [ meta, short_summaries_txt, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, short_summaries_txt, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO.out.short_summaries_json
             .map {
                 meta, short_summaries_json ->
-                    return [ meta, short_summaries_json, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, short_summaries_json, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO.out.busco_dir
             .map {
                 meta, busco_dir ->
-                    return [ meta, busco_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, busco_dir, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_GENERATEPLOT.out.png
             .map {
                 meta, png ->
-                    return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
             }
     )
 
@@ -641,105 +641,105 @@ workflow REFGENOMES {
         MERQURY.out.assembly_only_kmers_bed
             .map {
                 meta, assembly_only_kmers_bed ->
-                    return [ meta, assembly_only_kmers_bed, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_bed, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.assembly_only_kmers_wig
             .map {
                 meta, assembly_only_kmers_wig ->
-                    return [ meta, assembly_only_kmers_wig, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_wig, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, stats, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.dist_hist
             .map {
                 meta, dist_hist ->
-                    return [ meta, dist_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, dist_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_fl_png
             .map {
                 meta, spectra_cn_fl_png ->
-                    return [ meta, spectra_cn_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_fl_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_hist
             .map {
                 meta, spectra_cn_hist ->
-                    return [ meta, spectra_cn_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_ln_png
             .map {
                 meta, spectra_cn_ln_png ->
-                    return [ meta, spectra_cn_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_st_png
             .map {
                 meta, spectra_cn_st_png ->
-                    return [ meta, spectra_cn_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_st_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_fl_png
             .map {
                 meta, spectra_asm_fl_png ->
-                    return [ meta, spectra_asm_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_fl_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_hist
             .map {
                 meta, spectra_asm_hist ->
-                    return [ meta, spectra_asm_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_ln_png
             .map {
                 meta, spectra_asm_ln_png ->
-                    return [ meta, spectra_asm_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_st_png
             .map {
                 meta, spectra_asm_st_png ->
-                    return [ meta, spectra_asm_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_st_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.assembly_qv
             .map {
                 meta, assembly_qv ->
-                    return [ meta, assembly_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, assembly_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.scaffold_qv
             .map {
                 meta, scaffold_qv ->
-                    return [ meta, scaffold_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, scaffold_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.read_ploidy
             .map {
                 meta, read_ploidy ->
-                    return [ meta, read_ploidy, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, read_ploidy, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
             }
     )
 
@@ -750,42 +750,42 @@ workflow REFGENOMES {
         OMNIC_PATERNAL.out.fai
             .map {
                 meta, fai ->
-                    return [ meta, fai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, fai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         OMNIC_MATERNAL.out.fai
             .map {
                 meta, fai ->
-                    return [ meta, fai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, fai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         OMNIC_PATERNAL.out.bam
             .map {
                 meta, bam ->
-                    return [ meta, bam, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bam, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         OMNIC_MATERNAL.out.bam
             .map {
                 meta, bam ->
-                    return [ meta, bam, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bam, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         OMNIC_PATERNAL.out.bai
             .map {
                 meta, bai ->
-                    return [ meta, bai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         OMNIC_MATERNAL.out.bai
             .map {
                 meta, bai ->
-                    return [ meta, bai, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
             }
     )
 
@@ -796,42 +796,42 @@ workflow REFGENOMES {
         YAHS_PATERNAL.out.scaffolds_fasta
             .map {
                 meta, scaffolds_fasta ->
-                    return [ meta, scaffolds_fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         YAHS_MATERNAL.out.scaffolds_fasta
             .map {
                 meta, scaffolds_fasta ->
-                    return [ meta, scaffolds_fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         YAHS_PATERNAL.out.scaffolds_agp
             .map {
                 meta, scaffolds_agp ->
-                    return [ meta, scaffolds_agp, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_agp, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         YAHS_MATERNAL.out.scaffolds_agp
             .map {
                 meta, scaffolds_agp ->
-                    return [ meta, scaffolds_agp, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_agp, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         YAHS_PATERNAL.out.binary
             .map {
                 meta, binary ->
-                    return [ meta, binary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, binary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         YAHS_MATERNAL.out.binary
             .map {
                 meta, binary ->
-                    return [ meta, binary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, binary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
             }
     )
 
@@ -842,28 +842,28 @@ workflow REFGENOMES {
         FCS_FCSGX_PATERNAL.out.fcs_gx_report
             .map {
                 meta, fcs_gx_report ->
-                    return [ meta, fcs_gx_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, fcs_gx_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         FCS_FCSGX_MATERNAL.out.fcs_gx_report
             .map {
                 meta, fcs_gx_report ->
-                    return [ meta, fcs_gx_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, fcs_gx_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         FCS_FCSGX_PATERNAL.out.taxonomy_report
             .map {
                 meta, taxonomy_report ->
-                    return [ meta, taxonomy_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, taxonomy_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         FCS_FCSGX_MATERNAL.out.taxonomy_report
             .map {
                 meta, taxonomy_report ->
-                    return [ meta, taxonomy_report, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, taxonomy_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
             }
     )
 
@@ -874,42 +874,42 @@ workflow REFGENOMES {
         TIARA_TIARA_PATERNAL.out.classifications
             .map {
                 meta, classifications ->
-                    return [ meta, classifications, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, classifications, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         TIARA_TIARA_MATERNAL.out.classifications
             .map {
                 meta, classifications ->
-                    return [ meta, classifications, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, classifications, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         TIARA_TIARA_PATERNAL.out.log
             .map {
                 meta, log ->
-                    return [ meta, log, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, log, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         TIARA_TIARA_MATERNAL.out.log
             .map {
                 meta, log ->
-                    return [ meta, log, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, log, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         TIARA_TIARA_PATERNAL.out.fasta
             .map {
                 meta, fasta ->
-                    return [ meta, fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         TIARA_TIARA_MATERNAL.out.fasta
             .map {
                 meta, fasta ->
-                    return [ meta, fasta, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
             }
     )
 
@@ -920,21 +920,21 @@ workflow REFGENOMES {
         CAT_SCAFFOLDS.out.cat_file
             .map {
                 meta, cat_file ->
-                    return [ meta, cat_file, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/bbmap_filterbyname_cat" ]
+                    return [ meta, cat_file, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/bbmap" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         CAT_SCAFFOLDS.out.paternal_scaffold
             .map {
                 meta, paternal_scaffold ->
-                    return [ meta, paternal_scaffold, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/bbmap_filterbyname_cat" ]
+                    return [ meta, paternal_scaffold, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/bbmap" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         CAT_SCAFFOLDS.out.maternal_scaffold
             .map {
                 meta, maternal_scaffold ->
-                    return [ meta, maternal_scaffold, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/bbmap_filterbyname_cat" ]
+                    return [ meta, maternal_scaffold, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/bbmap" ]
             }
     )
 
@@ -945,14 +945,14 @@ workflow REFGENOMES {
         GFASTATS_FINAL.out.assembly
             .map {
                 meta, assembly ->
-                    return [ meta, assembly, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
+                    return [ meta, assembly, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GFASTATS_FINAL.out.assembly_summary
             .map {
                 meta, assembly_summary ->
-                    return [ meta, assembly_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
+                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
             }
     )
 
@@ -963,35 +963,35 @@ workflow REFGENOMES {
         BUSCO_BUSCO_FINAL.out.batch_summary
             .map {
                 meta, batch_summary ->
-                    return [ meta, batch_summary, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, batch_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO_FINAL.out.short_summaries_txt
             .map {
                 meta, short_summaries_txt ->
-                    return [ meta, short_summaries_txt, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, short_summaries_txt, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO_FINAL.out.short_summaries_json
             .map {
                 meta, short_summaries_json ->
-                    return [ meta, short_summaries_json, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, short_summaries_json, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO_FINAL.out.busco_dir
             .map {
                 meta, busco_dir ->
-                    return [ meta, busco_dir, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, busco_dir, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_GENERATEPLOT_FINAL.out.png
             .map {
                 meta, png ->
-                    return [ meta, png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
             }
     )
 
@@ -1002,91 +1002,91 @@ workflow REFGENOMES {
         MERQURY_FINAL.out.assembly_only_kmers_bed
             .map {
                 meta, assembly_only_kmers_bed ->
-                    return [ meta, assembly_only_kmers_bed, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_bed, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.assembly_only_kmers_wig
             .map {
                 meta, assembly_only_kmers_wig ->
-                    return [ meta, assembly_only_kmers_wig, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_wig, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, stats, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.dist_hist
             .map {
                 meta, dist_hist ->
-                    return [ meta, dist_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, dist_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_fl_png
             .map {
                 meta, spectra_cn_fl_png ->
-                    return [ meta, spectra_cn_fl_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_fl_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_hist
             .map {
                 meta, spectra_cn_hist ->
-                    return [ meta, spectra_cn_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_ln_png
             .map {
                 meta, spectra_cn_ln_png ->
-                    return [ meta, spectra_cn_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_st_png
             .map {
                 meta, spectra_cn_st_png ->
-                    return [ meta, spectra_cn_st_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_st_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_asm_hist
             .map {
                 meta, spectra_asm_hist ->
-                    return [ meta, spectra_asm_hist, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_asm_ln_png
             .map {
                 meta, spectra_asm_ln_png ->
-                    return [ meta, spectra_asm_ln_png, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.assembly_qv
             .map {
                 meta, assembly_qv ->
-                    return [ meta, assembly_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, assembly_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.scaffold_qv
             .map {
                 meta, scaffold_qv ->
-                    return [ meta, scaffold_qv, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, scaffold_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.read_ploidy
             .map {
                 meta, read_ploidy ->
-                    return [ meta, read_ploidy, "${params.rclone_dest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, read_ploidy, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
             }
     )
 
