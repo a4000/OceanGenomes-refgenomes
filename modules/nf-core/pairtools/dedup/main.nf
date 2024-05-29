@@ -27,7 +27,7 @@ process PAIRTOOLS_DEDUP {
     pairtools dedup \\
         $args \\
         -o ${prefix}_dedup.pairs.gz \\
-        --output-stats ${prefix}.pairs.stat \\
+        --output-stats ${prefix}_dedup.pairs.stat \\
         $input
 
     cat <<-END_VERSIONS > versions.yml

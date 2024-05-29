@@ -30,9 +30,44 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ### HiFiAdapterFilt
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `hifiadapterfilt/`
+  - `sample/`
+    - `*.fastq.gz`: filtered hifi fastq files.
+    - `*stats`: stat files produced by HiFiAdapterFilt.
+
+</details>
+
+[HiFiAdapterFilt](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-022-08375-1) removes Pacbio adapter contaminated reads from HiFi data and can convert bam files to fastq files.
+
 ### Meryl
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `meryl/`
+  - `*.hist`: Histogram produced by Meryl.
+  - `*.meryldb/`: Meryl database.
+
+</details>
+
+[Meryl](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02134-9) counts k-mers.
+
 ### GenomeScope2
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `genomescope2/`
+  - `*_model.txt`: Genomescope2 model.
+  - `*_summary.txt`: Summary stats.
+  - `*.png`: various png files produced by genomescope2.
+
+</details>
+
+[GenomeScope2](https://www.nature.com/articles/s41467-020-14998-3) profiles genomes.
 
 ### FastQC
 
@@ -55,25 +90,162 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 ### Hifiasm
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `hifiasm/`
+  - `*.stderr.log`: Standard error log file produced during the Hifiasm run.
+  - `*.gfa`: Various assembly graphs.
+  - `*.bin`: Error corrected and overlap reads.
+
+</details>
+
+[Hifiasm](https://www.nature.com/articles/s41592-020-01056-5) assembles genomes.
+
 ### BWA
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `bwa/`
+  - `*.bam`: bam file produced by BWA.
+  - `bwa/`: Directory containing the BWA index of the assembly.
+
+</details>
+
+[BWA](https://pubmed.ncbi.nlm.nih.gov/19451168/) Aligns short reads to a larger reference.
 
 ### Pairtools
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `pairtools/`
+  - `*.mapped.pairs`: Mapped pairs.
+  - `*_dedup.pairs.gz`: Deduplicated pairs.
+  - `*_dedup.pairs.stat`: Deduplicated pair stats.
+  - `*pairsam.gz`: Parsed pairs.
+  - `*pairsam.stat`: Parsed pair stats.
+  - `*pairs.gz`: Sorted pairs.
+  - `*unsorted.bam`: Unsorted pairs.
+
+</details>
+
+[Pairtools](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9949071/) is a suite of tools for contact extraction from sequencing data.
+
 ### Samtools
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `samtools/`
+  - `*bam`: description.
+  - `*bai`: description.
+  - `*fai`: description.
+
+</details>
+
+[Samtools](https://academic.oup.com/bioinformatics/article/25/16/2078/204688) stores alignment information.
 
 ### YAHS
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `yahs/`
+  - `*.bin`: description.
+  - `*_scffolds_final.agp`: description.
+  - `*_scffolds_final.fa`: description.
+
+</details>
+
+[YAHS](https://academic.oup.com/bioinformatics/article/39/1/btac808/6917071) constructs chromose scaffolds.
+
 ### fcs-gx
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `fcs/`
+  - `out/`
+    - `*fcs_gx_report.txt`: description.
+    - `*.taxonomy.rpt`: description.
+
+</details>
+
+[fcs-gx](https://www.biorxiv.org/content/10.1101/2023.06.02.543519v1) decontaminates genomes.
 
 ### Tiara
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `tiara/`
+  - `*.txt`: description.
+  - `*.fasta`: description.
+
+</details>
+
+[Tiara](https://academic.oup.com/bioinformatics/article/38/2/344/6375939) classifies eukaryotic sequences.
+
 ### BBMap
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `bbmap/`
+  - `*_filtered_scaffolds.fa`: description.
+
+</details>
+
+[BBMap](https://escholarship.org/uc/item/1h3515gn) is a suite of tools for working with genomic data.
 
 ### Gfastats
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `gfastats/`
+  - `*.assambly_summary`: description.
+  - `*.fasta.gz`: description.
+
+</details>
+
+[Gfastats](https://academic.oup.com/bioinformatics/article/38/17/4214/6633308) creates genome summary statistics.
+
 ### BUSCO
 
+<details markdown="1">
+<summary>Output files</summary>
+
+- `busco/`
+  - `*-busco.batch_summary.txt`: description.
+  - `*-busco/`: description.
+  - `*_busco_figure.png`: description.
+  - `*.json`: description.
+  - `*.txt`: description.
+
+</details>
+
+[BUSCO](https://academic.oup.com/mbe/article/38/10/4647/6329644) assesses genome quality.
+
 ### Merqury
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `merqury/`
+  - `*.png`: description.
+  - `*.hist`: description.
+  - `*.qv`: description.
+  - `*.bed`: description.
+  - `*.wig`: description.
+  - `*.ploidy`: description.
+  - `*.stats`: description.
+
+</details>
+
+[Merqury](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02134-9) assesses genome quality.
 
 ### MultiQC
 
