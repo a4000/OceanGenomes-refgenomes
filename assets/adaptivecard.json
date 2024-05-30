@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "nf-core/oceangenomesrefgenomes v${version} - ${runName}",
+                        "text": "Computational-Biology-OceanOmics/OceanGenomes-refgenomes v${version} - ${runName}",
                         "wrap": true
                     },
                     {

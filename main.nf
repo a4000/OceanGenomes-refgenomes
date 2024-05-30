@@ -1,11 +1,9 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/oceangenomesrefgenomes
+    Computational-Biology-OceanOmics/OceanGenomes-refgenomes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/oceangenomesrefgenomes
-    Website: https://nf-co.re/oceangenomesrefgenomes
-    Slack  : https://nfcore.slack.com/channels/oceangenomesrefgenomes
+    Github : https://github.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes
 ----------------------------------------------------------------------------------------
 */
 
