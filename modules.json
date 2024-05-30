@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/oceangenomesrefgenomes",
-    "homePage": "https://github.com/nf-core/oceangenomesrefgenomes",
+    "name": "Computational-Biology-OceanOmics/OceanGenomes-refgenomes",
+    "homePage": "https://github.com/Computational-Biology-OceanOmics/OceanGenomes-refgenomes",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

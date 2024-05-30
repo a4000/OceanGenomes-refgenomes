@@ -1,12 +1,8 @@
-# nf-core/oceangenomesrefgenomes: Usage
-
-## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/oceangenomesrefgenomes/usage](https://nf-co.re/oceangenomesrefgenomes/usage)
-
-> _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
+# Computational-Biology-OceanOmics/OceanGenomes-refgenomes: Usage
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+To run this pipeline, you will need a local BUSCO database and a local FCS GX data base. See [BUSCO documentation here](https://busco.ezlab.org/busco_userguide.html), and [FCS-GX documentation here](https://github.com/ncbi/fcs-gx).
 
 ## Samplesheet input
 
