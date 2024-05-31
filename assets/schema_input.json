@@ -28,7 +28,7 @@
                 "meta": ["hic_dir"]
             },
             "version": {
-                "type": "integer",
+                "type": "string",
                 "meta": ["version"]
             },
             "seq_date": {
