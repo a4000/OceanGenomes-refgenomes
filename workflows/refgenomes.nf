@@ -4,41 +4,41 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { HIFIADAPTERFILT                                   } from '../modules/local/hifiadapterfilt/main'
-include { FASTQC as FASTQC_HIFI                             } from '../modules/nf-core/fastqc/main'
-include { FASTQC as FASTQC_HIC                              } from '../modules/nf-core/fastqc/main'
-include { MERYL_COUNT                                       } from '../modules/nf-core/meryl/count/main'
-include { MERYL_HISTOGRAM                                   } from '../modules/nf-core/meryl/histogram/main'
-include { GENOMESCOPE2                                      } from '../modules/nf-core/genomescope2/main'
-include { CAT_HIC                                           } from '../modules/local/cat_hic/main'
-include { HIFIASM                                           } from '../modules/nf-core/hifiasm/main'
-include { GFASTATS as GFASTATS_PATERNAL                     } from '../modules/nf-core/gfastats/main'
-include { GFASTATS as GFASTATS_MATERNAL                     } from '../modules/nf-core/gfastats/main'
-include { BUSCO_BUSCO                                       } from '../modules/nf-core/busco/busco/main'
-include { BUSCO_GENERATEPLOT                                } from '../modules/nf-core/busco/generateplot/main'
-include { MERQURY                                           } from '../modules/nf-core/merqury/main'
-include { OMNIC as OMNIC_PATERNAL                           } from '../subworkflows/local/omnic/main'
-include { OMNIC as OMNIC_MATERNAL                           } from '../subworkflows/local/omnic/main'
-include { YAHS as YAHS_PATERNAL                             } from '../modules/nf-core/yahs/main'
-include { YAHS as YAHS_MATERNAL                             } from '../modules/nf-core/yahs/main'
-include { FCS_FCSGX as FCS_FCSGX_PATERNAL                   } from '../modules/nf-core/fcs/fcsgx/main'
-include { FCS_FCSGX as FCS_FCSGX_MATERNAL                   } from '../modules/nf-core/fcs/fcsgx/main'
-include { TIARA_TIARA as TIARA_TIARA_PATERNAL               } from '../modules/nf-core/tiara/tiara/main'
-include { TIARA_TIARA as TIARA_TIARA_MATERNAL               } from '../modules/nf-core/tiara/tiara/main'
-include { BBMAP_FILTERBYNAME as BBMAP_FILTERBYNAME_PATERNAL } from '../modules/local/bbmap/filterbyname/main'
-include { BBMAP_FILTERBYNAME as BBMAP_FILTERBYNAME_MATERNAL } from '../modules/local/bbmap/filterbyname/main'
-include { CAT_SCAFFOLDS                                     } from '../modules/local/cat_scaffolds/main'
-include { GFASTATS as GFASTATS_FINAL                        } from '../modules/nf-core/gfastats/main'
-include { BUSCO_BUSCO as BUSCO_BUSCO_FINAL                  } from '../modules/nf-core/busco/busco/main'
-include { BUSCO_GENERATEPLOT as BUSCO_GENERATEPLOT_FINAL    } from '../modules/nf-core/busco/generateplot/main'
-include { MERQURY as MERQURY_FINAL                          } from '../modules/nf-core/merqury/main'
-include { TAR                                               } from '../modules/local/tar/main'
-include { RCLONE                                            } from '../modules/local/rclone/main'
-include { MULTIQC                                           } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap                                  } from 'plugin/nf-validation'
-include { paramsSummaryMultiqc                              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                            } from '../subworkflows/local/utils_oceangenomesrefgenomes_pipeline'
+include { HIFIADAPTERFILT                                } from '../modules/local/hifiadapterfilt/main'
+include { FASTQC as FASTQC_HIFI                          } from '../modules/nf-core/fastqc/main'
+include { FASTQC as FASTQC_HIC                           } from '../modules/nf-core/fastqc/main'
+include { MERYL_COUNT                                    } from '../modules/nf-core/meryl/count/main'
+include { MERYL_HISTOGRAM                                } from '../modules/nf-core/meryl/histogram/main'
+include { GENOMESCOPE2                                   } from '../modules/nf-core/genomescope2/main'
+include { CAT_HIC                                        } from '../modules/local/cat_hic/main'
+include { HIFIASM                                        } from '../modules/nf-core/hifiasm/main'
+include { GFASTATS as GFASTATS_HAP1                      } from '../modules/nf-core/gfastats/main'
+include { GFASTATS as GFASTATS_HAP2                      } from '../modules/nf-core/gfastats/main'
+include { BUSCO_BUSCO                                    } from '../modules/nf-core/busco/busco/main'
+include { BUSCO_GENERATEPLOT                             } from '../modules/nf-core/busco/generateplot/main'
+include { MERQURY                                        } from '../modules/nf-core/merqury/main'
+include { OMNIC as OMNIC_HAP1                            } from '../subworkflows/local/omnic/main'
+include { OMNIC as OMNIC_HAP2                            } from '../subworkflows/local/omnic/main'
+include { YAHS as YAHS_HAP1                              } from '../modules/nf-core/yahs/main'
+include { YAHS as YAHS_HAP2                              } from '../modules/nf-core/yahs/main'
+include { FCS_FCSGX as FCS_FCSGX_HAP1                    } from '../modules/nf-core/fcs/fcsgx/main'
+include { FCS_FCSGX as FCS_FCSGX_HAP2                    } from '../modules/nf-core/fcs/fcsgx/main'
+include { TIARA_TIARA as TIARA_TIARA_HAP1                } from '../modules/nf-core/tiara/tiara/main'
+include { TIARA_TIARA as TIARA_TIARA_HAP2                } from '../modules/nf-core/tiara/tiara/main'
+include { BBMAP_FILTERBYNAME as BBMAP_FILTERBYNAME_HAP1  } from '../modules/local/bbmap/filterbyname/main'
+include { BBMAP_FILTERBYNAME as BBMAP_FILTERBYNAME_HAP2  } from '../modules/local/bbmap/filterbyname/main'
+include { CAT_SCAFFOLDS                                  } from '../modules/local/cat_scaffolds/main'
+include { GFASTATS as GFASTATS_FINAL                     } from '../modules/nf-core/gfastats/main'
+include { BUSCO_BUSCO as BUSCO_BUSCO_FINAL               } from '../modules/nf-core/busco/busco/main'
+include { BUSCO_GENERATEPLOT as BUSCO_GENERATEPLOT_FINAL } from '../modules/nf-core/busco/generateplot/main'
+include { MERQURY as MERQURY_FINAL                       } from '../modules/nf-core/merqury/main'
+include { TAR                                            } from '../modules/local/tar/main'
+include { RCLONE                                         } from '../modules/local/rclone/main'
+include { MULTIQC                                        } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap                               } from 'plugin/nf-validation'
+include { paramsSummaryMultiqc                           } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML                         } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                         } from '../subworkflows/local/utils_oceangenomesrefgenomes_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,14 +60,20 @@ workflow REFGENOMES {
     ch_hifi = ch_samplesheet
         .map {
             meta ->
-                return [ meta[0], meta.hifi_dir[0] ]
+                meta = meta[0]
+                meta.sample = meta.id
+                meta.id = meta.id + "_" + meta.version
+                return [ meta, meta.hifi_dir ]
         }
 
     ch_hic = ch_samplesheet
         .map {
             meta ->
                 if (meta.hic_dir[0] != null) {
-                    return [ meta[0], meta.hic_dir[0] ]
+                    meta = meta[0]
+                    meta.sample = meta.id
+                    meta.id = meta.id + "_" + meta.version
+                    return [ meta, meta.hic_dir ]
                 }
         }
 
@@ -149,11 +155,11 @@ workflow REFGENOMES {
     //
     // MODULE: Run Gfastats
     //
-    ch_gfastats_pat_in = HIFIASM.out.paternal_contigs.join(GENOMESCOPE2.out.summary)
-    ch_gfastats_mat_in = HIFIASM.out.maternal_contigs.join(GENOMESCOPE2.out.summary)
+    ch_gfastats_hap1_in = HIFIASM.out.hap1_contigs.join(GENOMESCOPE2.out.summary)
+    ch_gfastats_hap2_in = HIFIASM.out.hap2_contigs.join(GENOMESCOPE2.out.summary)
 
-    GFASTATS_PATERNAL (
-        ch_gfastats_pat_in,
+    GFASTATS_HAP1 (
+        ch_gfastats_hap1_in,
         "fasta",
         "",
         "hap1",
@@ -162,10 +168,10 @@ workflow REFGENOMES {
         [],
         []
     )
-    ch_versions = ch_versions.mix(GFASTATS_PATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(GFASTATS_HAP1.out.versions.first())
 
-    GFASTATS_MATERNAL (
-        ch_gfastats_mat_in,
+    GFASTATS_HAP2 (
+        ch_gfastats_hap2_in,
         "fasta",
         "",
         "hap2",
@@ -174,19 +180,19 @@ workflow REFGENOMES {
         [],
         []
     )
-    ch_versions = ch_versions.mix(GFASTATS_MATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(GFASTATS_HAP2.out.versions.first())
 
-    ch_gfastats_assemblies = GFASTATS_PATERNAL.out.assembly.join(GFASTATS_MATERNAL.out.assembly)
+    ch_contig_assemblies = GFASTATS_HAP1.out.assembly.join(GFASTATS_HAP2.out.assembly)
         .map {
-            meta, paternal_contigs, maternal_contigs ->
-                return [ meta, [ paternal_contigs, maternal_contigs ] ]
+            meta, hap1_contigs, hap2_contigs ->
+                return [ meta, [ hap1_contigs, hap2_contigs ] ]
         }
 
     //
     // MODULE: Run Busco
     //
     BUSCO_BUSCO (
-        ch_gfastats_assemblies,
+        ch_contig_assemblies,
         params.buscomode,
         params.buscodb,
         []
@@ -204,7 +210,7 @@ workflow REFGENOMES {
     //
     // MODULE: Run Merqury
     //
-    ch_merqury_in = MERYL_COUNT.out.meryl_db.join(ch_gfastats_assemblies)
+    ch_merqury_in = MERYL_COUNT.out.meryl_db.join(ch_contig_assemblies)
 
     MERQURY (
         ch_merqury_in
@@ -214,105 +220,105 @@ workflow REFGENOMES {
     //
     // SUBWORKFLOW: Run omnic workflow
     //
-    ch_omnic_pat_in = CAT_HIC.out.cat_files.join(ch_gfastats_assemblies)
+    ch_omnic_hap1_in = CAT_HIC.out.cat_files.join(ch_contig_assemblies)
         .map {
             meta, reads, assemblies ->
                 return [ meta, reads, assemblies[0] ]
         }
 
-    ch_omnic_mat_in = CAT_HIC.out.cat_files.join(ch_gfastats_assemblies)
+    ch_omnic_hap2_in = CAT_HIC.out.cat_files.join(ch_contig_assemblies)
         .map {
             meta, reads, assemblies ->
                 return [ meta, reads, assemblies[1] ]
         }
 
-    OMNIC_PATERNAL (
-        ch_omnic_pat_in,
+    OMNIC_HAP1 (
+        ch_omnic_hap1_in,
         "hap1"
     )
-    ch_versions = ch_versions.mix(OMNIC_PATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(OMNIC_HAP1.out.versions.first())
 
-    OMNIC_MATERNAL (
-        ch_omnic_mat_in,
+    OMNIC_HAP2 (
+        ch_omnic_hap2_in,
         "hap2"
     )
-    ch_versions = ch_versions.mix(OMNIC_MATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(OMNIC_HAP2.out.versions.first())
 
     //
     // MODULE: Run Yahs
     //
-    ch_yahs_pat_in = OMNIC_PATERNAL.out.bam.join(GFASTATS_PATERNAL.out.assembly).join(OMNIC_PATERNAL.out.fai)
-    ch_yahs_mat_in = OMNIC_MATERNAL.out.bam.join(GFASTATS_MATERNAL.out.assembly).join(OMNIC_MATERNAL.out.fai)
+    ch_yahs_hap1_in = OMNIC_HAP1.out.bam.join(GFASTATS_HAP1.out.assembly).join(OMNIC_HAP1.out.fai)
+    ch_yahs_hap2_in = OMNIC_HAP2.out.bam.join(GFASTATS_HAP2.out.assembly).join(OMNIC_HAP2.out.fai)
 
-    YAHS_PATERNAL (
-        ch_yahs_pat_in,
+    YAHS_HAP1 (
+        ch_yahs_hap1_in,
         "hap1"
     )
-    ch_versions = ch_versions.mix(YAHS_PATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(YAHS_HAP1.out.versions.first())
 
-    YAHS_MATERNAL (
-        ch_yahs_pat_in,
+    YAHS_HAP2 (
+        ch_yahs_hap1_in,
         "hap2"
     )
-    ch_versions = ch_versions.mix(YAHS_MATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(YAHS_HAP2.out.versions.first())
 
     //
     // MODULE: Run Fcsgx
     //
-    FCS_FCSGX_PATERNAL (
-        YAHS_PATERNAL.out.scaffolds_fasta,
+    FCS_FCSGX_HAP1 (
+        YAHS_HAP1.out.scaffolds_fasta,
         params.gxdb,
         "hap1"
     )
-    ch_versions = ch_versions.mix(FCS_FCSGX_PATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(FCS_FCSGX_HAP1.out.versions.first())
 
-    FCS_FCSGX_MATERNAL (
-        YAHS_MATERNAL.out.scaffolds_fasta,
+    FCS_FCSGX_HAP2 (
+        YAHS_HAP2.out.scaffolds_fasta,
         params.gxdb,
         "hap2"
     )
-    ch_versions = ch_versions.mix(FCS_FCSGX_MATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(FCS_FCSGX_HAP2.out.versions.first())
 
     //
     // MODULE: Run Tiara
     //
-    TIARA_TIARA_PATERNAL (
-        YAHS_PATERNAL.out.scaffolds_fasta,
+    TIARA_TIARA_HAP1 (
+        YAHS_HAP1.out.scaffolds_fasta,
         "hap1"
     )
-    ch_versions = ch_versions.mix(TIARA_TIARA_PATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(TIARA_TIARA_HAP1.out.versions.first())
 
-    TIARA_TIARA_MATERNAL (
-        YAHS_MATERNAL.out.scaffolds_fasta,
+    TIARA_TIARA_HAP2 (
+        YAHS_HAP2.out.scaffolds_fasta,
         "hap2"
     )
-    ch_versions = ch_versions.mix(TIARA_TIARA_MATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(TIARA_TIARA_HAP2.out.versions.first())
 
     //
     // MODULE: Run BBmap filterbyname
     //
-    ch_bbmap_filterbyname_pat_in = YAHS_PATERNAL.out.scaffolds_fasta.join(TIARA_TIARA_PATERNAL.out.classifications)
-    ch_bbmap_filterbyname_mat_in = YAHS_MATERNAL.out.scaffolds_fasta.join(TIARA_TIARA_MATERNAL.out.classifications)
+    ch_bbmap_filterbyname_hap1_in = YAHS_HAP1.out.scaffolds_fasta.join(TIARA_TIARA_HAP1.out.classifications)
+    ch_bbmap_filterbyname_hap2_in = YAHS_HAP2.out.scaffolds_fasta.join(TIARA_TIARA_HAP2.out.classifications)
 
-    BBMAP_FILTERBYNAME_PATERNAL (
-        ch_bbmap_filterbyname_pat_in,
+    BBMAP_FILTERBYNAME_HAP1 (
+        ch_bbmap_filterbyname_hap1_in,
         "hap1_filtered_scaffolds.fa"
     )
-    ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME_PATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME_HAP1.out.versions.first())
 
-    BBMAP_FILTERBYNAME_MATERNAL (
-        ch_bbmap_filterbyname_mat_in,
+    BBMAP_FILTERBYNAME_HAP2 (
+        ch_bbmap_filterbyname_hap2_in,
         "hap2_filtered_scaffolds.fa"
     )
-    ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME_MATERNAL.out.versions.first())
+    ch_versions = ch_versions.mix(BBMAP_FILTERBYNAME_HAP2.out.versions.first())
 
     //
     // MODULE: Rename, and concatenate scaffolds
     //
-    ch_filtered_scaffolds = BBMAP_FILTERBYNAME_PATERNAL.out.scaffolds.join(BBMAP_FILTERBYNAME_MATERNAL.out.scaffolds)
+    ch_filtered_scaffolds = BBMAP_FILTERBYNAME_HAP1.out.scaffolds.join(BBMAP_FILTERBYNAME_HAP2.out.scaffolds)
         .map {
-            meta, paternal_scaffolds, maternal_scaffolds ->
-                return [ meta, [ paternal_scaffolds, maternal_scaffolds ] ]
+            meta, hap1_scaffolds, hap2_scaffolds ->
+                return [ meta, [ hap1_scaffolds, hap2_scaffolds ] ]
         }
 
     CAT_SCAFFOLDS (
@@ -359,10 +365,10 @@ workflow REFGENOMES {
     //
     // MODULE: Run Merqury again
     //
-    ch_merqury_fin_in = MERYL_COUNT.out.meryl_db.join(CAT_SCAFFOLDS.out.paternal_scaffold).join(CAT_SCAFFOLDS.out.maternal_scaffold)
+    ch_merqury_fin_in = MERYL_COUNT.out.meryl_db.join(CAT_SCAFFOLDS.out.hap1_scaffold).join(CAT_SCAFFOLDS.out.hap2_scaffold)
         .map {
-            meta, meryl_db, paternal_scaffold, maternal_scaffold ->
-                return [ meta, meryl_db, [ paternal_scaffold, maternal_scaffold ] ]
+            meta, meryl_db, hap1_scaffold, hap2_scaffold ->
+                return [ meta, meryl_db, [ hap1_scaffold, hap2_scaffold ] ]
         }
 
     MERQURY_FINAL (
@@ -387,26 +393,27 @@ workflow REFGENOMES {
     ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
     ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
     ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
-    ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false))
-    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_GENERATEPLOT.out.png.map { meta, png -> return [ png ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.linear_plot_png.map { meta, linear_plot_png -> return [ linear_plot_png ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.transformed_linear_plot_png.map { meta, transformed_linear_plot_png -> return [ transformed_linear_plot_png ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.log_plot_png.map { meta, log_plot_png -> return [ log_plot_png ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.transformed_log_plot_png.map { meta, transformed_log_plot_png -> return [ transformed_log_plot_png ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_fl_png.map { meta, spectra_cn_fl_png -> return [ spectra_cn_fl_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_ln_png.map { meta, spectra_cn_ln_png -> return [ spectra_cn_ln_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_st_png.map { meta, spectra_cn_st_png -> return [ spectra_cn_st_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_fl_png.map { meta, spectra_asm_fl_png -> return [ spectra_asm_fl_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_ln_png.map { meta, spectra_asm_ln_png -> return [ spectra_asm_ln_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_st_png.map { meta, spectra_asm_st_png -> return [ spectra_asm_st_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_fl_png.map { meta, spectra_cn_fl_png -> return [ spectra_cn_fl_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_ln_png.map { meta, spectra_cn_ln_png -> return [ spectra_cn_ln_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_st_png.map { meta, spectra_cn_st_png -> return [ spectra_cn_st_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_fl_png.map { meta, spectra_asm_fl_png -> return [ spectra_asm_fl_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_ln_png.map { meta, spectra_asm_ln_png -> return [ spectra_asm_ln_png[0] ] })
-    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_st_png.map { meta, spectra_asm_st_png -> return [ spectra_asm_st_png[0] ] })
+
+    ch_multiqc_files                      = ch_multiqc_files.join(BUSCO_GENERATEPLOT.out.png)
+    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.linear_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.transformed_linear_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.log_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.transformed_log_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_cn_fl_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_cn_ln_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_cn_st_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_asm_fl_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_asm_ln_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_asm_st_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_cn_fl_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_cn_ln_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_cn_st_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_asm_fl_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_asm_ln_png)
+    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_asm_st_png)
+    ch_multiqc_files                      = ch_multiqc_files.combine(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_files                      = ch_multiqc_files.combine(ch_collated_versions)
+    ch_multiqc_files                      = ch_multiqc_files.combine(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false)).view()
 
     MULTIQC (
         ch_multiqc_files.collect(),
@@ -422,14 +429,14 @@ workflow REFGENOMES {
         HIFIADAPTERFILT.out.reads
             .map {
                 meta, reads ->
-                    return [ meta, reads, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt" ]
+                    return [ meta, reads, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiadapterfilt" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIADAPTERFILT.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiadapterfilt/qc_stats" ]
+                    return [ meta, stats, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiadapterfilt/qc_stats" ]
             }
     )
 
@@ -446,14 +453,14 @@ workflow REFGENOMES {
         TAR.out.tar_file
             .map {
                 meta, meryl_db ->
-                    return [ meta, meryl_db, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
+                    return [ meta, meryl_db, "${params.rclonedest}/${meta.sample}/${meta.id}/meryl" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERYL_HISTOGRAM.out.hist
             .map {
                 meta, hist ->
-                    return [ meta, hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/meryl" ]
+                    return [ meta, hist, "${params.rclonedest}/${meta.sample}/${meta.id}/meryl" ]
             }
     )
 
@@ -464,42 +471,42 @@ workflow REFGENOMES {
         GENOMESCOPE2.out.linear_plot_png
             .map {
                 meta, linear_plot_png ->
-                    return [ meta, linear_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, linear_plot_png, "${params.rclonedest}/${meta.sample}/${meta.id}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.transformed_linear_plot_png
             .map {
                 meta, transformed_linear_plot_png ->
-                    return [ meta, transformed_linear_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, transformed_linear_plot_png, "${params.rclonedest}/${meta.sample}/${meta.id}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.log_plot_png
             .map {
                 meta, log_plot_png ->
-                    return [ meta, log_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, log_plot_png, "${params.rclonedest}/${meta.sample}/${meta.id}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.transformed_log_plot_png
             .map {
                 meta, transformed_log_plot_png ->
-                    return [ meta, transformed_log_plot_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, transformed_log_plot_png, "${params.rclonedest}/${meta.sample}/${meta.id}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.model
             .map {
                 meta, model ->
-                    return [ meta, model, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, model, "${params.rclonedest}/${meta.sample}/${meta.id}/genomescope2" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GENOMESCOPE2.out.summary
             .map {
                 meta, summary ->
-                    return [ meta, summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/genomescope2" ]
+                    return [ meta, summary, "${params.rclonedest}/${meta.sample}/${meta.id}/genomescope2" ]
             }
     )
 
@@ -510,56 +517,56 @@ workflow REFGENOMES {
         HIFIASM.out.raw_unitigs
             .map {
                 meta, raw_unitigs ->
-                    return [ meta, raw_unitigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, raw_unitigs, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.corrected_reads
             .map {
                 meta, corrected_reads ->
-                    return [ meta, corrected_reads, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, corrected_reads, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.source_overlaps
             .map {
                 meta, source_overlaps ->
-                    return [ meta, source_overlaps, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, source_overlaps, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.reverse_overlaps
             .map {
                 meta, reverse_overlaps ->
-                    return [ meta, reverse_overlaps, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, reverse_overlaps, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.processed_unitigs
             .map {
                 meta, processed_unitigs ->
-                    return [ meta, processed_unitigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, processed_unitigs, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        HIFIASM.out.paternal_contigs
+        HIFIASM.out.hap1_contigs
             .map {
-                meta, paternal_contigs ->
-                    return [ meta, paternal_contigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                meta, hap1_contigs ->
+                    return [ meta, hap1_contigs, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        HIFIASM.out.maternal_contigs
+        HIFIASM.out.hap2_contigs
             .map {
-                meta, maternal_contigs ->
-                    return [ meta, maternal_contigs, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                meta, hap2_contigs ->
+                    return [ meta, hap2_contigs, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         HIFIASM.out.log
             .map {
                 meta, log ->
-                    return [ meta, log, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/hifiasm" ]
+                    return [ meta, log, "${params.rclonedest}/${meta.sample}/${meta.id}/hifiasm" ]
             }
     )
 
@@ -567,31 +574,31 @@ workflow REFGENOMES {
     // Collect GFASTATS files for rclone
     //
     ch_rclone_in = ch_rclone_in.mix(
-        GFASTATS_PATERNAL.out.assembly
+        GFASTATS_HAP1.out.assembly
             .map {
                 meta, assembly ->
-                    return [ meta, assembly, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly, "${params.rclonedest}/${meta.sample}/${meta.id}/gfastats" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        GFASTATS_MATERNAL.out.assembly
+        GFASTATS_HAP2.out.assembly
             .map {
                 meta, assembly ->
-                    return [ meta, assembly, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly, "${params.rclonedest}/${meta.sample}/${meta.id}/gfastats" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        GFASTATS_PATERNAL.out.assembly_summary
+        GFASTATS_HAP1.out.assembly_summary
             .map {
                 meta, assembly_summary ->
-                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.sample}/${meta.id}/gfastats" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        GFASTATS_MATERNAL.out.assembly_summary
+        GFASTATS_HAP2.out.assembly_summary
             .map {
                 meta, assembly_summary ->
-                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats" ]
+                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.sample}/${meta.id}/gfastats" ]
             }
     )
 
@@ -602,35 +609,35 @@ workflow REFGENOMES {
         BUSCO_BUSCO.out.batch_summary
             .map {
                 meta, batch_summary ->
-                    return [ meta, batch_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, batch_summary, "${params.rclonedest}/${meta.sample}/${meta.id}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO.out.short_summaries_txt
             .map {
                 meta, short_summaries_txt ->
-                    return [ meta, short_summaries_txt, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, short_summaries_txt, "${params.rclonedest}/${meta.sample}/${meta.id}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO.out.short_summaries_json
             .map {
                 meta, short_summaries_json ->
-                    return [ meta, short_summaries_json, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, short_summaries_json, "${params.rclonedest}/${meta.sample}/${meta.id}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO.out.busco_dir
             .map {
                 meta, busco_dir ->
-                    return [ meta, busco_dir, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, busco_dir, "${params.rclonedest}/${meta.sample}/${meta.id}/busco" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_GENERATEPLOT.out.png
             .map {
                 meta, png ->
-                    return [ meta, png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco" ]
+                    return [ meta, png, "${params.rclonedest}/${meta.sample}/${meta.id}/busco" ]
             }
     )
 
@@ -641,105 +648,105 @@ workflow REFGENOMES {
         MERQURY.out.assembly_only_kmers_bed
             .map {
                 meta, assembly_only_kmers_bed ->
-                    return [ meta, assembly_only_kmers_bed, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_bed, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.assembly_only_kmers_wig
             .map {
                 meta, assembly_only_kmers_wig ->
-                    return [ meta, assembly_only_kmers_wig, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_wig, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, stats, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.dist_hist
             .map {
                 meta, dist_hist ->
-                    return [ meta, dist_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, dist_hist, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_fl_png
             .map {
                 meta, spectra_cn_fl_png ->
-                    return [ meta, spectra_cn_fl_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_fl_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_hist
             .map {
                 meta, spectra_cn_hist ->
-                    return [ meta, spectra_cn_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_hist, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_ln_png
             .map {
                 meta, spectra_cn_ln_png ->
-                    return [ meta, spectra_cn_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_ln_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_cn_st_png
             .map {
                 meta, spectra_cn_st_png ->
-                    return [ meta, spectra_cn_st_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_st_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_fl_png
             .map {
                 meta, spectra_asm_fl_png ->
-                    return [ meta, spectra_asm_fl_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_fl_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_hist
             .map {
                 meta, spectra_asm_hist ->
-                    return [ meta, spectra_asm_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_hist, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_ln_png
             .map {
                 meta, spectra_asm_ln_png ->
-                    return [ meta, spectra_asm_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_ln_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.spectra_asm_st_png
             .map {
                 meta, spectra_asm_st_png ->
-                    return [ meta, spectra_asm_st_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_st_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.assembly_qv
             .map {
                 meta, assembly_qv ->
-                    return [ meta, assembly_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, assembly_qv, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.scaffold_qv
             .map {
                 meta, scaffold_qv ->
-                    return [ meta, scaffold_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, scaffold_qv, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY.out.read_ploidy
             .map {
                 meta, read_ploidy ->
-                    return [ meta, read_ploidy, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury/${meta.tolid}_png" ]
+                    return [ meta, read_ploidy, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury/${meta.tolid}_png" ]
             }
     )
 
@@ -747,45 +754,45 @@ workflow REFGENOMES {
     // Collect OMNIC files for rclone
     //
     ch_rclone_in = ch_rclone_in.mix(
-        OMNIC_PATERNAL.out.fai
+        OMNIC_HAP1.out.fai
             .map {
                 meta, fai ->
-                    return [ meta, fai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, fai, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        OMNIC_MATERNAL.out.fai
+        OMNIC_HAP2.out.fai
             .map {
                 meta, fai ->
-                    return [ meta, fai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, fai, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        OMNIC_PATERNAL.out.bam
+        OMNIC_HAP1.out.bam
             .map {
                 meta, bam ->
-                    return [ meta, bam, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bam, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        OMNIC_MATERNAL.out.bam
+        OMNIC_HAP2.out.bam
             .map {
                 meta, bam ->
-                    return [ meta, bam, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bam, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        OMNIC_PATERNAL.out.bai
+        OMNIC_HAP1.out.bai
             .map {
                 meta, bai ->
-                    return [ meta, bai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bai, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        OMNIC_MATERNAL.out.bai
+        OMNIC_HAP2.out.bai
             .map {
                 meta, bai ->
-                    return [ meta, bai, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/omnic" ]
+                    return [ meta, bai, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
 
@@ -793,45 +800,45 @@ workflow REFGENOMES {
     // Collect YAHS files for rclone
     //
     ch_rclone_in = ch_rclone_in.mix(
-        YAHS_PATERNAL.out.scaffolds_fasta
+        YAHS_HAP1.out.scaffolds_fasta
             .map {
                 meta, scaffolds_fasta ->
-                    return [ meta, scaffolds_fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_fasta, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        YAHS_MATERNAL.out.scaffolds_fasta
+        YAHS_HAP2.out.scaffolds_fasta
             .map {
                 meta, scaffolds_fasta ->
-                    return [ meta, scaffolds_fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_fasta, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        YAHS_PATERNAL.out.scaffolds_agp
+        YAHS_HAP1.out.scaffolds_agp
             .map {
                 meta, scaffolds_agp ->
-                    return [ meta, scaffolds_agp, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_agp, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        YAHS_MATERNAL.out.scaffolds_agp
+        YAHS_HAP2.out.scaffolds_agp
             .map {
                 meta, scaffolds_agp ->
-                    return [ meta, scaffolds_agp, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, scaffolds_agp, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        YAHS_PATERNAL.out.binary
+        YAHS_HAP1.out.binary
             .map {
                 meta, binary ->
-                    return [ meta, binary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, binary, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        YAHS_MATERNAL.out.binary
+        YAHS_HAP2.out.binary
             .map {
                 meta, binary ->
-                    return [ meta, binary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/yahs" ]
+                    return [ meta, binary, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
 
@@ -839,31 +846,31 @@ workflow REFGENOMES {
     // Collect FCSGX files for rclone
     //
     ch_rclone_in = ch_rclone_in.mix(
-        FCS_FCSGX_PATERNAL.out.fcs_gx_report
+        FCS_FCSGX_HAP1.out.fcs_gx_report
             .map {
                 meta, fcs_gx_report ->
-                    return [ meta, fcs_gx_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, fcs_gx_report, "${params.rclonedest}/${meta.sample}/${meta.id}/fcsgx" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        FCS_FCSGX_MATERNAL.out.fcs_gx_report
+        FCS_FCSGX_HAP2.out.fcs_gx_report
             .map {
                 meta, fcs_gx_report ->
-                    return [ meta, fcs_gx_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, fcs_gx_report, "${params.rclonedest}/${meta.sample}/${meta.id}/fcsgx" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        FCS_FCSGX_PATERNAL.out.taxonomy_report
+        FCS_FCSGX_HAP1.out.taxonomy_report
             .map {
                 meta, taxonomy_report ->
-                    return [ meta, taxonomy_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, taxonomy_report, "${params.rclonedest}/${meta.sample}/${meta.id}/fcsgx" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        FCS_FCSGX_MATERNAL.out.taxonomy_report
+        FCS_FCSGX_HAP2.out.taxonomy_report
             .map {
                 meta, taxonomy_report ->
-                    return [ meta, taxonomy_report, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/fcsgx" ]
+                    return [ meta, taxonomy_report, "${params.rclonedest}/${meta.sample}/${meta.id}/fcsgx" ]
             }
     )
 
@@ -871,45 +878,45 @@ workflow REFGENOMES {
     // Collect TIARA files for rclone
     //
     ch_rclone_in = ch_rclone_in.mix(
-        TIARA_TIARA_PATERNAL.out.classifications
+        TIARA_TIARA_HAP1.out.classifications
             .map {
                 meta, classifications ->
-                    return [ meta, classifications, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, classifications, "${params.rclonedest}/${meta.sample}/${meta.id}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        TIARA_TIARA_MATERNAL.out.classifications
+        TIARA_TIARA_HAP2.out.classifications
             .map {
                 meta, classifications ->
-                    return [ meta, classifications, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, classifications, "${params.rclonedest}/${meta.sample}/${meta.id}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        TIARA_TIARA_PATERNAL.out.log
+        TIARA_TIARA_HAP1.out.log
             .map {
                 meta, log ->
-                    return [ meta, log, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, log, "${params.rclonedest}/${meta.sample}/${meta.id}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        TIARA_TIARA_MATERNAL.out.log
+        TIARA_TIARA_HAP2.out.log
             .map {
                 meta, log ->
-                    return [ meta, log, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, log, "${params.rclonedest}/${meta.sample}/${meta.id}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        TIARA_TIARA_PATERNAL.out.fasta
+        TIARA_TIARA_HAP1.out.fasta
             .map {
                 meta, fasta ->
-                    return [ meta, fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, fasta, "${params.rclonedest}/${meta.sample}/${meta.id}/tiara" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        TIARA_TIARA_MATERNAL.out.fasta
+        TIARA_TIARA_HAP2.out.fasta
             .map {
                 meta, fasta ->
-                    return [ meta, fasta, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/tiara" ]
+                    return [ meta, fasta, "${params.rclonedest}/${meta.sample}/${meta.id}/tiara" ]
             }
     )
 
@@ -920,21 +927,21 @@ workflow REFGENOMES {
         CAT_SCAFFOLDS.out.cat_file
             .map {
                 meta, cat_file ->
-                    return [ meta, cat_file, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/bbmap" ]
+                    return [ meta, cat_file, "${params.rclonedest}/${meta.sample}/${meta.id}/bbmap" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        CAT_SCAFFOLDS.out.paternal_scaffold
+        CAT_SCAFFOLDS.out.hap1_scaffold
             .map {
-                meta, paternal_scaffold ->
-                    return [ meta, paternal_scaffold, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/bbmap" ]
+                meta, hap1_scaffold ->
+                    return [ meta, hap1_scaffold, "${params.rclonedest}/${meta.sample}/${meta.id}/bbmap" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
-        CAT_SCAFFOLDS.out.maternal_scaffold
+        CAT_SCAFFOLDS.out.hap2_scaffold
             .map {
-                meta, maternal_scaffold ->
-                    return [ meta, maternal_scaffold, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/bbmap" ]
+                meta, hap2_scaffold ->
+                    return [ meta, hap2_scaffold, "${params.rclonedest}/${meta.sample}/${meta.id}/bbmap" ]
             }
     )
 
@@ -945,14 +952,14 @@ workflow REFGENOMES {
         GFASTATS_FINAL.out.assembly
             .map {
                 meta, assembly ->
-                    return [ meta, assembly, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
+                    return [ meta, assembly, "${params.rclonedest}/${meta.sample}/${meta.id}/gfastats_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         GFASTATS_FINAL.out.assembly_summary
             .map {
                 meta, assembly_summary ->
-                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/gfastats_final" ]
+                    return [ meta, assembly_summary, "${params.rclonedest}/${meta.sample}/${meta.id}/gfastats_final" ]
             }
     )
 
@@ -963,35 +970,35 @@ workflow REFGENOMES {
         BUSCO_BUSCO_FINAL.out.batch_summary
             .map {
                 meta, batch_summary ->
-                    return [ meta, batch_summary, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, batch_summary, "${params.rclonedest}/${meta.sample}/${meta.id}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO_FINAL.out.short_summaries_txt
             .map {
                 meta, short_summaries_txt ->
-                    return [ meta, short_summaries_txt, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, short_summaries_txt, "${params.rclonedest}/${meta.sample}/${meta.id}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO_FINAL.out.short_summaries_json
             .map {
                 meta, short_summaries_json ->
-                    return [ meta, short_summaries_json, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, short_summaries_json, "${params.rclonedest}/${meta.sample}/${meta.id}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_BUSCO_FINAL.out.busco_dir
             .map {
                 meta, busco_dir ->
-                    return [ meta, busco_dir, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, busco_dir, "${params.rclonedest}/${meta.sample}/${meta.id}/busco_final" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         BUSCO_GENERATEPLOT_FINAL.out.png
             .map {
                 meta, png ->
-                    return [ meta, png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/busco_final" ]
+                    return [ meta, png, "${params.rclonedest}/${meta.sample}/${meta.id}/busco_final" ]
             }
     )
 
@@ -1002,91 +1009,98 @@ workflow REFGENOMES {
         MERQURY_FINAL.out.assembly_only_kmers_bed
             .map {
                 meta, assembly_only_kmers_bed ->
-                    return [ meta, assembly_only_kmers_bed, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_bed, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.assembly_only_kmers_wig
             .map {
                 meta, assembly_only_kmers_wig ->
-                    return [ meta, assembly_only_kmers_wig, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, assembly_only_kmers_wig, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.stats
             .map {
                 meta, stats ->
-                    return [ meta, stats, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, stats, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.dist_hist
             .map {
                 meta, dist_hist ->
-                    return [ meta, dist_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, dist_hist, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_fl_png
             .map {
                 meta, spectra_cn_fl_png ->
-                    return [ meta, spectra_cn_fl_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_fl_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_hist
             .map {
                 meta, spectra_cn_hist ->
-                    return [ meta, spectra_cn_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_hist, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_ln_png
             .map {
                 meta, spectra_cn_ln_png ->
-                    return [ meta, spectra_cn_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_ln_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_cn_st_png
             .map {
                 meta, spectra_cn_st_png ->
-                    return [ meta, spectra_cn_st_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_cn_st_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_asm_hist
             .map {
                 meta, spectra_asm_hist ->
-                    return [ meta, spectra_asm_hist, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_hist, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.spectra_asm_ln_png
             .map {
                 meta, spectra_asm_ln_png ->
-                    return [ meta, spectra_asm_ln_png, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, spectra_asm_ln_png, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.assembly_qv
             .map {
                 meta, assembly_qv ->
-                    return [ meta, assembly_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, assembly_qv, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.scaffold_qv
             .map {
                 meta, scaffold_qv ->
-                    return [ meta, scaffold_qv, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, scaffold_qv, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
             }
     )
     ch_rclone_in = ch_rclone_in.mix(
         MERQURY_FINAL.out.read_ploidy
             .map {
                 meta, read_ploidy ->
-                    return [ meta, read_ploidy, "${params.rclonedest}/${meta.id}/${meta.id}_${meta.version}/merqury_final/${meta.tolid}_png" ]
+                    return [ meta, read_ploidy, "${params.rclonedest}/${meta.sample}/${meta.id}/merqury_final/${meta.tolid}_png" ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MULTIQC.out.report
+            .map {
+                meta, report ->
+                    return [ meta, report, "${params.rclonedest}/${meta.sample}/${meta.id}/multiqc" ]
             }
     )
 
