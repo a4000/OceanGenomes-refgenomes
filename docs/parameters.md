@@ -6,7 +6,7 @@ All the parameters in the pipeline can be set in a config file, or they can be s
 
 ### General parameters
 
-- input: Input sample sheet .csv file (columns: sample, hifi_dir, hic_dir, version, tolid, taxid)
+- input: Input sample sheet .csv file (columns: sample, hifi_dir, hic_dir, version, date, tolid, taxid)
 - outdir: Directory where output files will be published
 - binddir: Directory to bind to the containers (e.g., /scratch)
 - kvalue: kvalue to use with Meryl (default = 31).
