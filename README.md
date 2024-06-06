@@ -45,10 +45,10 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-sample,hifi_dir,hic_dir,version,tolid,taxids
-OG88,hifi_bams/OG89,hic_fastqs/OG89,1,163129,163129
-OG89,hifi_bams/OG89,,1,163129,163129
-OG90,hifi_fastqs/OG90,hic_fastqs/OG90,1,163129,163129
+sample,hifi_dir,hic_dir,version,date,tolid,taxid
+OG88,hifi_bams/OG89,hic_fastqs/OG89,v1,20240101,163129,163129
+OG89,hifi_bams/OG89,,v1,20240202,163129,163129
+OG90,hifi_fastqs/OG90,hic_fastqs/OG90,v1,20240303,163129,163129
 ```
 
 Each row represents a sample. The hifi_dir column must point to a directory that contains bam files or fastq files. The hic_dir column can point to a directory containing fastq files, however this column can be left blank if there isn't Hi-C data for this sample.
