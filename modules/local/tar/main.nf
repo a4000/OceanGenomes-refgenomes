@@ -12,8 +12,8 @@ process TAR {
     val(suffix)
 
     output:
-    tuple val(meta), path("*"), emit: tar_file
-    path  "versions.yml"      , emit: versions
+    tuple val(meta), path("*_*"), emit: tar_file
+    path  "versions.yml"        , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

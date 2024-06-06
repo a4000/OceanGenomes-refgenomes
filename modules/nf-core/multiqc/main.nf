@@ -8,16 +8,19 @@ process MULTIQC {
         'biocontainers/multiqc:1.21--pyhdfd78af_0' }"
 
     input:
-    tuple val(meta), path(multiqc_files, stageAs: "?/*")
+    tuple val(meta), path(files0), path(files1), path(files2), path(files3), path(files4), path(files5), path(files6), path(files7), path(files8), path(files9), path(files10), path(files11), path(files12), path(files13), path(files14), path(files15), path(files16), path(files17)
     path(multiqc_config)
     path(extra_multiqc_config)
     path(multiqc_logo)
+    path(wf_summary)
+    path(versions)
+    path(method_desc)
 
     output:
-    path "*multiqc_report.html", emit: report
-    path "*_data"              , emit: data
-    path "*_plots"             , optional:true, emit: plots
-    path "versions.yml"        , emit: versions
+    tuple val(meta), path("*multiqc_report.html"), emit: report
+    path "*_data"                                , emit: data
+    path "*_plots"                               , optional:true, emit: plots
+    path "versions.yml"                          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

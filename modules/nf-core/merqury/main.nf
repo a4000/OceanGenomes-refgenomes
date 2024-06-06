@@ -9,6 +9,7 @@ process MERQURY {
 
     input:
     tuple val(meta), path(meryl_db), path(assembly)
+    val(stage)
 
     output:
     tuple val(meta), path("*_only.bed")          , emit: assembly_only_kmers_bed
@@ -33,7 +34,7 @@ process MERQURY {
 
     script:
     // def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}_${stage}"
     def VERSION = 1.3
     """
     # Nextflow changes the container --entrypoint to /bin/bash (container default entrypoint: /usr/local/env-execute)
@@ -49,7 +50,7 @@ process MERQURY {
     merqury.sh \\
         $meryl_db \\
         $assembly \\
-        $prefix
+        ${prefix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

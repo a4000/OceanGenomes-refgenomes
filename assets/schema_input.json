@@ -11,7 +11,7 @@
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
-                "meta": ["id"]
+                "meta": ["sample"]
             },
             "hifi_dir": {
                 "type": "string",
@@ -31,9 +31,9 @@
                 "type": "string",
                 "meta": ["version"]
             },
-            "seq_date": {
+            "date": {
                 "type": "string",
-                "meta": ["seq_date"]
+                "meta": ["date"]
             },
             "tolid": {
                 "type": "string",
@@ -44,6 +44,6 @@
                 "meta": ["taxid"]
             }
         },
-        "required": ["sample", "hifi_dir", "version", "tolid", "taxid"]
+        "required": ["sample", "hifi_dir", "version", "date", "tolid", "taxid"]
     }
 }

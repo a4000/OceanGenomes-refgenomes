@@ -12,8 +12,8 @@ process CAT_SCAFFOLDS {
 
     output:
     tuple val(meta), path("*_combined_scaffold.fa"), emit: cat_file
-    tuple val(meta), path("H1.scaffold_1.fa")      , emit: hap1_scaffold
-    tuple val(meta), path("H2.scaffold_2.fa")      , emit: hap2_scaffold
+    tuple val(meta), path("*H1.scaffold_1.fa")     , emit: hap1_scaffold
+    tuple val(meta), path("*H2.scaffold_2.fa")     , emit: hap2_scaffold
     path  "versions.yml"                           , emit: versions
 
     when:
@@ -25,7 +25,7 @@ process CAT_SCAFFOLDS {
     sed 's/scaffold/H1.scaffold/g' *hap1_filtered_scaffolds.fa > ${prefix}_H1.scaffold_1.fa
     sed 's/scaffold/H2.scaffold/g' *hap2_filtered_scaffolds.fa > ${prefix}_H2.scaffold_2.fa
 
-    cat H1.scaffold_1.fa H2.scaffold_2.fa > "${prefix}_combined_scaffold.fa"
+    cat ${prefix}_H1.scaffold_1.fa ${prefix}_H2.scaffold_2.fa > "${prefix}_combined_scaffold.fa"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

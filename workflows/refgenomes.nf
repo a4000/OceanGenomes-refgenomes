@@ -61,8 +61,7 @@ workflow REFGENOMES {
         .map {
             meta ->
                 meta = meta[0]
-                meta.sample = meta.id
-                meta.id = meta.id + "_" + meta.version
+                meta.id = meta.sample + "_" + meta.version + "_" + meta.date
                 return [ meta, meta.hifi_dir ]
         }
 
@@ -71,8 +70,7 @@ workflow REFGENOMES {
             meta ->
                 if (meta.hic_dir[0] != null) {
                     meta = meta[0]
-                    meta.sample = meta.id
-                    meta.id = meta.id + "_" + meta.version
+                    meta.id = meta.sample + "_" + meta.version + "_" + meta.date
                     return [ meta, meta.hic_dir ]
                 }
         }
@@ -89,9 +87,10 @@ workflow REFGENOMES {
     // MODULE: Run FastQC on HiFi fastqc files
     //
     FASTQC_HIFI (
-        HIFIADAPTERFILT.out.reads
+        HIFIADAPTERFILT.out.reads,
+        "hifi"
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_HIFI.out.zip.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_HIFI.out.zip)
     ch_versions = ch_versions.mix(FASTQC_HIFI.out.versions.first())
 
     //
@@ -131,9 +130,10 @@ workflow REFGENOMES {
     // MODULE: Run FastQC on Hi-C fastqc files
     //
     FASTQC_HIC (
-        CAT_HIC.out.cat_files
+        CAT_HIC.out.cat_files,
+        "hic"
     )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_HIC.out.zip.collect{it[1]})
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_HIC.out.zip)
     ch_versions = ch_versions.mix(FASTQC_HIC.out.versions.first())
 
     //
@@ -203,7 +203,8 @@ workflow REFGENOMES {
     // MODULE: Run Busco generate_plot
     //
     BUSCO_GENERATEPLOT (
-        BUSCO_BUSCO.out.short_summaries_txt
+        BUSCO_BUSCO.out.short_summaries_txt,
+        "contigs"
     )
     ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT.out.versions.first())
 
@@ -213,7 +214,8 @@ workflow REFGENOMES {
     ch_merqury_in = MERYL_COUNT.out.meryl_db.join(ch_contig_assemblies)
 
     MERQURY (
-        ch_merqury_in
+        ch_merqury_in,
+        "contigs"
     )
     ch_versions = ch_versions.mix(MERQURY.out.versions.first())
 
@@ -358,7 +360,8 @@ workflow REFGENOMES {
     // MODULE: Run Busco generate_plot again
     //
     BUSCO_GENERATEPLOT_FINAL (
-        BUSCO_BUSCO_FINAL.out.short_summaries_txt
+        BUSCO_BUSCO_FINAL.out.short_summaries_txt,
+        "scaffolds"
     )
     ch_versions = ch_versions.mix(BUSCO_GENERATEPLOT_FINAL.out.versions.first())
 
@@ -372,7 +375,8 @@ workflow REFGENOMES {
         }
 
     MERQURY_FINAL (
-        ch_merqury_fin_in
+        ch_merqury_fin_in,
+        "scaffolds"
     )
     ch_versions = ch_versions.mix(MERQURY_FINAL.out.versions.first())
 
@@ -394,32 +398,41 @@ workflow REFGENOMES {
     ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
     ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-    ch_multiqc_files                      = ch_multiqc_files.join(BUSCO_GENERATEPLOT.out.png)
-    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.linear_plot_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.transformed_linear_plot_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.log_plot_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(GENOMESCOPE2.out.transformed_log_plot_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_cn_fl_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_cn_ln_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_cn_st_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_asm_fl_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_asm_ln_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY.out.spectra_asm_st_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_cn_fl_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_cn_ln_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_cn_st_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_asm_fl_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_asm_ln_png)
-    ch_multiqc_files                      = ch_multiqc_files.join(MERQURY_FINAL.out.spectra_asm_st_png)
-    ch_multiqc_files                      = ch_multiqc_files.combine(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files                      = ch_multiqc_files.combine(ch_collated_versions)
-    ch_multiqc_files                      = ch_multiqc_files.combine(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false)).view()
+    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_GENERATEPLOT.out.png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(BUSCO_GENERATEPLOT_FINAL.out.png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.linear_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.transformed_linear_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.log_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(GENOMESCOPE2.out.transformed_log_plot_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_fl_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_ln_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_cn_st_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_fl_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_ln_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY.out.spectra_asm_st_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_fl_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_ln_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_st_png)
+    ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_ln_png)
+    ch_multiqc_wf_summary                 = ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml').view()
+    ch_multiqc_versions                   = ch_collated_versions
+    ch_multiqc_method_desc                = ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false)
+
+    ch_multiqc_files = ch_multiqc_files
+        .groupTuple()
+        .map {
+            meta, files ->
+                return [ meta, files[0], files[1], files[2], files[3], files[4], files[5], files[6], files[7], files[8], files[9], files[10], files[11], files[12], files[13], files[14], files[15], files[16], files[17] ]
+        }
 
     MULTIQC (
-        ch_multiqc_files.collect(),
+        ch_multiqc_files,
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
+        ch_multiqc_logo.toList(),
+        ch_multiqc_wf_summary.first(),
+        ch_multiqc_versions.first(),
+        ch_multiqc_method_desc.first()
     )
 
     //

@@ -8,6 +8,7 @@ process BUSCO_GENERATEPLOT {
 
     input:
     tuple val(meta), path(short_summary_txt, stageAs: 'busco/*')
+    val(stage)
 
     output:
     tuple val(meta), path('*.png'), emit: png
@@ -24,7 +25,7 @@ process BUSCO_GENERATEPLOT {
         $args \\
         -wd busco
 
-    mv ./busco/busco_figure.png ${meta.id}_${prefix}.png
+    mv ./busco/busco_figure.png ${meta.id}_${prefix}_${stage}.png
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
