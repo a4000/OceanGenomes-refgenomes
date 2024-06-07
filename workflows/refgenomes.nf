@@ -414,7 +414,7 @@ workflow REFGENOMES {
     ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_ln_png)
     ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_cn_st_png)
     ch_multiqc_files                      = ch_multiqc_files.mix(MERQURY_FINAL.out.spectra_asm_ln_png)
-    ch_multiqc_wf_summary                 = ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml').view()
+    ch_multiqc_wf_summary                 = ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
     ch_multiqc_versions                   = ch_collated_versions
     ch_multiqc_method_desc                = ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false)
 
