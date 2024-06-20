@@ -6,7 +6,7 @@ process RCLONE {
     container "quay.io/toolhippie/rclone:20240212"
 
     input:
-    tuple val(meta), path(files), val(dest_path)
+    tuple val(meta), val(step), path(files), val(dest_path)
 
     output:
     path "versions.yml", emit: versions
@@ -16,11 +16,12 @@ process RCLONE {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}_${step}"
     """
     mkdir files_to_move
     cp -rL $files files_to_move
     cd files_to_move
+    rclone size . > ${prefix}_rclone_size_before_transfer.txt
 
     rclone move \\
         \$(pwd)/. \\
