@@ -33,10 +33,10 @@ include { BUSCO_BUSCO as BUSCO_BUSCO_FINAL               } from '../modules/nf-c
 include { BUSCO_GENERATEPLOT as BUSCO_GENERATEPLOT_FINAL } from '../modules/nf-core/busco/generateplot/main'
 include { MERQURY as MERQURY_FINAL                       } from '../modules/nf-core/merqury/main'
 include { TAR                                            } from '../modules/local/tar/main'
-//include { MD5SUM as MD5SUM_OMNICS_HAP1                   } from '../modules/local/md5sum/main'
-//include { MD5SUM as MD5SUM_OMNICS_HAP2                   } from '../modules/local/md5sum/main'
-//include { MD5SUM as MD5SUM_YAHS_HAP1                     } from '../modules/local/md5sum/main'
-//include { MD5SUM as MD5SUM_YAHS_HAP2                     } from '../modules/local/md5sum/main'
+include { MD5SUM as MD5SUM_OMNICS_HAP1                   } from '../modules/local/md5sum/main'
+include { MD5SUM as MD5SUM_OMNICS_HAP2                   } from '../modules/local/md5sum/main'
+include { MD5SUM as MD5SUM_YAHS_HAP1                     } from '../modules/local/md5sum/main'
+include { MD5SUM as MD5SUM_YAHS_HAP2                     } from '../modules/local/md5sum/main'
 include { RCLONE                                         } from '../modules/local/rclone/main'
 include { MULTIQC                                        } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap                               } from 'plugin/nf-validation'
@@ -791,16 +791,20 @@ workflow REFGENOMES {
                     return [ meta, "omnic_hap1_bam", bam, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
-//    MD5SUM_OMNICS_HAP1(
-//        OMNIC_HAP1.out.bam
-//            .map {
-//                meta, bam ->
-//                    return [ meta, "omnic_hap1_bam", bam ]
-//            }
-//    )
-//    ch_rclone_in = ch_rclone_in.mix(
-//        MD5SUM_OMNICS_HAP1.out.txt
-//    )
+    MD5SUM_OMNICS_HAP1(
+        OMNIC_HAP1.out.bam
+            .map {
+                meta, bam ->
+                    return [ meta, "omnic_hap1_bam", bam ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MD5SUM_OMNICS_HAP1.out.txt
+            .map {
+                meta, txt ->
+                    return [ meta, "omnic_hap1_bam_md5sum", txt, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
+            }
+    )
     ch_rclone_in = ch_rclone_in.mix(
         OMNIC_HAP2.out.bam
             .map {
@@ -808,16 +812,20 @@ workflow REFGENOMES {
                     return [ meta, "omnic_hap2_bam", bam, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
             }
     )
-//    MD5SUM_OMNICS_HAP2(
-//        OMNIC_HAP2.out.bam
-//            .map {
-//                meta, bam ->
-//                    return [ meta, "omnic_hap2_bam", bam ]
-//            }
-//    )
-//    ch_rclone_in = ch_rclone_in.mix(
-//        MD5SUM_OMNICS_HAP2.out.txt
-//    )
+    MD5SUM_OMNICS_HAP2(
+        OMNIC_HAP2.out.bam
+            .map {
+                meta, bam ->
+                    return [ meta, "omnic_hap2_bam", bam ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MD5SUM_OMNICS_HAP2.out.txt
+            .map {
+                meta, txt ->
+                    return [ meta, "omnic_hap2_bam_md5sum", txt, "${params.rclonedest}/${meta.sample}/${meta.id}/omnic" ]
+            }
+    )
     ch_rclone_in = ch_rclone_in.mix(
         OMNIC_HAP1.out.bai
             .map {
@@ -843,16 +851,20 @@ workflow REFGENOMES {
                     return [ meta, "yahs_hap1_scaffolds_fasta", scaffolds_fasta, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
-//    MD5SUM_YAHS_HAP1(
-//        YAHS_HAP1.out.scaffolds_fasta
-//            .map {
-//                meta, scaffolds_fasta ->
-//                    return [ meta, "yahs_hap1_scaffolds_fasta", scaffolds_fasta ]
-//            }
-//    )
-//    ch_rclone_in = ch_rclone_in.mix(
-//        MD5SUM_YAHS_HAP1.out.txt
-//    )
+    MD5SUM_YAHS_HAP1(
+        YAHS_HAP1.out.scaffolds_fasta
+            .map {
+                meta, scaffolds_fasta ->
+                    return [ meta, "yahs_hap1_scaffolds_fasta", scaffolds_fasta ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MD5SUM_YAHS_HAP1.out.txt
+            .map {
+                meta, txt ->
+                    return [ meta, "yahs_hap1_scaffolds_fasta_md5sum", txt, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
+            }
+    )
     ch_rclone_in = ch_rclone_in.mix(
         YAHS_HAP2.out.scaffolds_fasta
             .map {
@@ -860,16 +872,20 @@ workflow REFGENOMES {
                     return [ meta, "yahs_hap2_scaffolds_fasta", scaffolds_fasta, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
             }
     )
-//    MD5SUM_YAHS_HAP2(
-//        YAHS_HAP2.out.scaffolds_fasta
-//            .map {
-//                meta, scaffolds_fasta ->
-//                    return [ meta, "yahs_hap2_scaffolds_fasta", scaffolds_fasta ]
-//            }
-//    )
-//    ch_rclone_in = ch_rclone_in.mix(
-//        MD5SUM_YAHS_HAP2.out.txt
-//    )
+    MD5SUM_YAHS_HAP2(
+        YAHS_HAP2.out.scaffolds_fasta
+            .map {
+                meta, scaffolds_fasta ->
+                    return [ meta, "yahs_hap2_scaffolds_fasta", scaffolds_fasta ]
+            }
+    )
+    ch_rclone_in = ch_rclone_in.mix(
+        MD5SUM_YAHS_HAP2.out.txt
+            .map {
+                meta, txt ->
+                    return [ meta, "yahs_hap2_scaffolds_fasta_md5sum", txt, "${params.rclonedest}/${meta.sample}/${meta.id}/yahs" ]
+            }
+    )
     ch_rclone_in = ch_rclone_in.mix(
         YAHS_HAP1.out.scaffolds_agp
             .map {
