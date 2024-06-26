@@ -2,9 +2,7 @@ process BUSCO_GENERATEPLOT {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/busco:5.7.1--pyhdfd78af_0':
-        'biocontainers/busco:5.7.1--pyhdfd78af_0' }"
+    container 'ezlabgva/busco:v5.7.1_cv1'
 
     input:
     tuple val(meta), path(short_summary_txt, stageAs: 'busco/*')
